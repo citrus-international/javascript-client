@@ -1,0 +1,31 @@
+{
+  "name": "javascript-client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "clean": "rm -rf dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/citrus-international/javascript-client.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/citrus-international/javascript-client/issues"
+  },
+  "homepage": "https://github.com/citrus-international/javascript-client#readme",
+  "devDependencies": {
+    "html-webpack-plugin": "^2.28.0",
+    "source-map-loader": "^0.2.1",
+    "ts-loader": "^2.1.0",
+    "tslint": "^5.2.0",
+    "tslint-loader": "^3.5.3",
+    "typescript": "^2.3.2",
+    "webpack": "^2.5.1"
+  }
+}

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Example Usage of CitrusAd JS Library</title>
+</head>
+<body>
+<script type="text/javascript" src="../../dist/CitrusAd.js"></script>
+<script type="text/javascript">
+
+  var citrusAd = CitrusAd.init(function (payload) {
+    return payload;
+  }, "test");
+
+  citrusAd.getAds(
+      {},
+      {
+        handleResponse: function (response) {
+          if (response.isSuccessful) {
+            console.log(response.ads);
+          }
+        }
+      });
+
+</script>
+</body>
+</html>
