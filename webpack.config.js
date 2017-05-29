@@ -1,7 +1,7 @@
 var path = require('path');
 
 module.exports = {
-  entry: './src/CitrusAd.ts',
+  entry: ['babel-polyfill', './src/CitrusAd.ts'],
   output: {
     filename: 'CitrusAd.js',
     path: path.resolve(__dirname, 'dist'),
@@ -11,18 +11,13 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: 'ts-loader',
+        use: ['babel-loader', 'ts-loader', 'source-map-loader'],
         exclude: /node_modules/
       },
       {
         enforce: 'pre',
         test: /\.js$/,
         loader: "source-map-loader"
-      },
-      {
-        enforce: 'pre',
-        test: /\.tsx?$/,
-        use: "source-map-loader"
       }
     ]
   },

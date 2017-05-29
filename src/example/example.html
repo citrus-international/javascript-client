@@ -7,21 +7,28 @@
 <body>
 <script type="text/javascript" src="../../dist/CitrusAd.js"></script>
 <script type="text/javascript">
-
-  var citrusAd = CitrusAd.init(function (payload) {
-    return payload;
-  }, "test");
-
-  citrusAd.getAds(
-      {},
-      {
-        handleResponse: function (response) {
-          if (response.isSuccessful) {
-            console.log(response.ads);
-          }
-        }
-      });
-
+  var citrusAd = CitrusAd.init(
+      function (payload) {
+        return Promise.resolve("test");
+      },
+      "e-commerce-provider-id",
+      "http://localhost:8080/");
+  citrusAd.requestAd({
+    userId: 'test-user-id',
+    browserContext: {
+      userAgent: 'test agent'
+    },
+    categoryHierarchy: 'bread/whole-meal/',
+    currentCartItems: [],
+    maxNumberOfAds: 3,
+    pageType: "search",
+    substitutedProductGtin: '123332312',
+    searchTerm: 'test'
+  }).then(function (result) {
+    console.log(result);
+  }).catch(function (error) {
+    console.log(error);
+  })
 </script>
 </body>
 </html>

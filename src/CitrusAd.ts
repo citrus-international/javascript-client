@@ -1,44 +1,48 @@
-import {PayloadSigner} from "./operations/PayloadSigner";
-import {Context} from "./models/Context";
-import {AdResponseHandler} from "./operations/AdResponseHandler";
-import {AdResponse} from "./models/AdResponse";
-import {Ad} from "./models/Ad";
+import {ContextInformation, DefaultApi, DefaultApiApiKeys, GenerateAdResponse} from './generated/api';
+import {Payload} from './Payload';
+import {PayloadSigner} from './PayloadSigner';
+
 export class CitrusAd {
 
-  private constructor(private payloadSigner: PayloadSigner, private issuerId: string) {
+  private api: DefaultApi;
+  private payload: Payload;
+  private token: string;
 
+  private constructor(private payloadSigner: PayloadSigner, private issuerId: string, private apiAddress: string) {
+    this.api = new DefaultApi(apiAddress);
   }
 
-  static init(payloadSigner: PayloadSigner, issuerId: string): CitrusAd {
-    return new CitrusAd(payloadSigner, issuerId);
+  static init(payloadSigner: PayloadSigner, issuerId: string, apiAddress: string): CitrusAd {
+    return new CitrusAd(payloadSigner, issuerId, apiAddress);
   }
 
-  getAds(context: Context, adResponseHanlder: AdResponseHandler) {
-
-    var ad1: Ad = {
-      gtin: '1234',
-      adId: 'asdfadfa',
-      price: 2.20
-    };
-
-    var ad2: Ad = {
-      gtin: '1234',
-      adId: 'asdfadfa',
-      price: null
-    };
-
-    var ads: Array<Ad> = [
-      ad1, ad2
-    ];
-    var response: AdResponse = {
-      ads: ads,
-      isSuccessful: true
-    };
-
-    adResponseHanlder.handleResponse(response);
+  private async checkToken() {
+    if (this.token == null || this.payload == null || this.payload.isExpired()) {
+      this.payload = new Payload(this.issuerId);
+      this.token = await this.payloadSigner(this.payload);
+      this.api.setApiKey(DefaultApiApiKeys.TokenSecurity, this.token);
+    }
   }
 
-  registerClick(adId: string) {
+  async requestAd(context: ContextInformation): Promise<GenerateAdResponse> {
+    await this.checkToken();
+    var result = await this.api.requestAd(context);
+    return result.body;
+  }
 
+  async registerClick(adId: string): Promise<boolean> {
+    const retries = 3;
+    var result = false;
+    while (retries > 0) {
+      try {
+        await this.checkToken();
+        this.api.registerClick(adId);
+        result = true;
+        break;
+      } catch (err) {
+        continue;
+      }
+    }
+    return result;
   }
 }
