@@ -17,6 +17,6 @@ export class Payload {
   nuance: string;
 
   isExpired(): boolean {
-    return new Date().getTime() > +this.exp;
+    return new Date().getTime() > Number(this.exp);
   }
 }
