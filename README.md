@@ -11,7 +11,7 @@ Building this project requires:
 Once all above are installed these steps should be taken:
  - Run `mvn compile` to generate required code.
  - Run `npm install` to get all JavaScript dependencies.
- - Run `./node_modules/webpack/bin/webpack.js -p` to create a prodcution distribution.
+ - Run `./node_modules/webpack/bin/webpack.js -p` to create a production distribution.
  Output will be put in `dist` folder.
  
 ## Installing using npm
