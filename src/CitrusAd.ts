@@ -24,9 +24,9 @@ export class CitrusAd {
     }
   }
 
-  async registerImpression(adId: string): Promise<boolean>{
+  async registerImpression(adId: string): Promise<boolean> {
     const retries = 3;
-    var result = false;
+    let result = false;
     while (retries > 0) {
       try {
         await this.checkToken();
@@ -34,6 +34,7 @@ export class CitrusAd {
         result = true;
         break;
       } catch (err) {
+        console.log(err);
         continue;
       }
     }
@@ -42,7 +43,7 @@ export class CitrusAd {
 
   async registerClick(adId: string): Promise<boolean> {
     const retries = 3;
-    var result = false;
+    let result = false;
     while (retries > 0) {
       try {
         await this.checkToken();
@@ -50,6 +51,7 @@ export class CitrusAd {
         result = true;
         break;
       } catch (err) {
+        console.log(err);
         continue;
       }
     }

@@ -13,11 +13,8 @@
       },
       "e-commerce-provider-id",
       "http://localhost:8080/");
-  citrusAd.requestAd({
+  citrusAd.registerImpression({
     userId: 'test-user-id',
-    browserContext: {
-      userAgent: 'test agent'
-    },
     categoryHierarchy: 'bread/whole-meal/',
     currentCartItems: [],
     maxNumberOfAds: 3,
