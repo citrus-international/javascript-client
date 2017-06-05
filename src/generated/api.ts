@@ -30,10 +30,6 @@ export class BatchRegisterPurchaseRequestOrders {
     'productAdInstanceIds': Array<string>;
 }
 
-export class BrowserContext {
-    'userAgent': string;
-}
-
 export class ContextInformation {
     'userId': string;
     'searchTerm': string;
@@ -42,7 +38,6 @@ export class ContextInformation {
     'pageType': ContextInformation.PageTypeEnum;
     'currentCartItems': Array<OrderItem>;
     'maxNumberOfAds': number;
-    'browserContext': BrowserContext;
 }
 
 export namespace ContextInformation {
@@ -270,6 +265,56 @@ export class DefaultApi {
         // verify required parameter 'productAdInstanceId' is not null or undefined
         if (productAdInstanceId === null || productAdInstanceId === undefined) {
             throw new Error('Required parameter productAdInstanceId was null or undefined when calling registerClick.');
+        }
+
+
+        localVarPath = localVarPath + "?" + $.param(queryParameters);
+
+
+        let reqHasFile = false;
+        let reqDict = {};
+        let reqFormData = new FormData();
+
+        let requestOptions: JQueryAjaxSettings = {
+            url: localVarPath,
+            type: 'POST',
+            headers: headerParams,
+            processData: false
+        };
+
+        if (Object.keys(reqDict).length) {
+            requestOptions.data = reqHasFile ? reqFormData : JSON.stringify(reqDict);
+            requestOptions.contentType = reqHasFile ? false : 'application/json; charset=utf-8';
+        }
+
+        this.authentications.TokenSecurity.applyToRequest(requestOptions);
+
+        this.authentications.default.applyToRequest(requestOptions);
+
+        let dfd = $.Deferred();
+        $.ajax(requestOptions).then(
+            (data: GenericResponse, textStatus: string, jqXHR: JQueryXHR) =>
+                dfd.resolve({ response: jqXHR, body: data }),
+            (xhr: JQueryXHR, textStatus: string, errorThrown: string) =>
+                dfd.reject({ response: xhr, body: errorThrown })
+        );
+        return dfd.promise();
+    }
+    /**
+     * Register an impression for an ad
+     * 
+     * @param productAdInstanceId 
+     */
+    public registerImpression (productAdInstanceId: string) : JQueryPromise<{ response: JQueryXHR; body: GenericResponse;  }> {
+        let localVarPath = this.basePath + '/ad/{productAdInstanceId}/impression'
+            .replace('{' + 'productAdInstanceId' + '}', String(productAdInstanceId));
+        let queryParameters: any = {};
+        let headerParams: any = this.extendObj({}, this.defaultHeaders);
+
+
+        // verify required parameter 'productAdInstanceId' is not null or undefined
+        if (productAdInstanceId === null || productAdInstanceId === undefined) {
+            throw new Error('Required parameter productAdInstanceId was null or undefined when calling registerImpression.');
         }
 
 

@@ -1,4 +1,4 @@
-import {ContextInformation, DefaultApi, DefaultApiApiKeys, GenerateAdResponse} from './generated/api';
+import {DefaultApi, DefaultApiApiKeys} from './generated/api';
 import {Payload} from './Payload';
 import {PayloadSigner} from './PayloadSigner';
 
@@ -24,10 +24,20 @@ export class CitrusAd {
     }
   }
 
-  async requestAd(context: ContextInformation): Promise<GenerateAdResponse> {
-    await this.checkToken();
-    var result = await this.api.requestAd(context);
-    return result.body;
+  async registerImpression(adId: string): Promise<boolean>{
+    const retries = 3;
+    var result = false;
+    while (retries > 0) {
+      try {
+        await this.checkToken();
+        await this.api.registerImpression(adId);
+        result = true;
+        break;
+      } catch (err) {
+        continue;
+      }
+    }
+    return result;
   }
 
   async registerClick(adId: string): Promise<boolean> {
@@ -36,7 +46,7 @@ export class CitrusAd {
     while (retries > 0) {
       try {
         await this.checkToken();
-        this.api.registerClick(adId);
+        await this.api.registerClick(adId);
         result = true;
         break;
       } catch (err) {
