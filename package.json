@@ -1,0 +1,52 @@
+{
+  "name": "javascript-client",
+  "version": "1.0.0",
+  "description": "CitrusAd JavaScript Library",
+  "main": "index.js",
+  "scripts": {
+    "test": "karma start karma.conf.js",
+    "build": "webpack",
+    "clean": "rm -rf dist",
+    "analyise": "webpack -p -j | sed -n '1!p' | webpack-bundle-size-analyzer"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/citrus-international/javascript-client.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/citrus-international/javascript-client/issues"
+  },
+  "homepage": "https://github.com/citrus-international/javascript-client#readme",
+  "devDependencies": {
+    "@types/jasmine": "^2.5.47",
+    "@types/jasmine-ajax": "^3.1.36",
+    "@types/jquery": "^2.0.45",
+    "@types/uuid": "^2.0.29",
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-env": "^1.5.1",
+    "jasmine": "^2.6.0",
+    "jasmine-ajax": "^3.3.1",
+    "karma": "^1.7.0",
+    "karma-chrome-launcher": "^2.1.1",
+    "karma-jasmine": "^1.1.0",
+    "karma-jasmine-ajax": "^0.1.13",
+    "karma-phantomjs-launcher": "^1.0.4",
+    "karma-sourcemap-loader": "^0.3.7",
+    "karma-webpack": "^2.0.3",
+    "source-map-loader": "^0.2.1",
+    "ts-loader": "^2.1.0",
+    "tslint": "^5.2.0",
+    "tslint-loader": "^3.5.3",
+    "typescript": "^2.3.2",
+    "webpack": "^2.5.1"
+  },
+  "dependencies": {
+    "jquery": "^3.2.1",
+    "uuid": "^3.0.1"
+  }
+}

@@ -1,0 +1,3 @@
+[submodule "module/integration-api-spec"]
+	path = module/integration-api-spec
+	url = git@github.com:citrus-international/integration-api-spec.git
