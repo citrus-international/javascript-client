@@ -29,7 +29,7 @@ module.exports = function(config) {
     logLevel: config.LOG_INFO,
     autoWatch: false,
     browsers: ['chrome_without_security'],
-    singleRun: true,
+    singleRun: false,
     concurrency: Infinity,
     mime: { 'text/x-typescript': ['ts','tsx'] }
   })

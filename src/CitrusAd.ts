@@ -1,5 +1,5 @@
-import { DefaultApi } from './api';
-
+import { DefaultApi } from './CitrusApi';
+import { CitrusTrack } from './CitrusTrack'
 type TokenProvider = () => Promise<string>;
 
 export class CitrusAd {
@@ -13,6 +13,7 @@ export class CitrusAd {
 
   private constructor(private getToken: TokenProvider, private apiAddress: string) {
     this.api = new DefaultApi(undefined, apiAddress);
+    CitrusTrack.init('CitrusUID');
   }
 
   async reportImpression(adId: string, teamId: string): Promise<void> {
