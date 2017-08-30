@@ -109,6 +109,49 @@ export const DefaultApiFetchParamCreator = {
 };
 
 /**
+ * DefaultApi - functional programming interface
+ */
+export const DefaultApiFp = {
+
+    /**
+     * Reports a click for an Ad  A Click should be reported whenever a user clicks on an Ad.  Similar to impressions, the Product Ad ID must be included in the path of the request along with the appropriate JWT.
+     * @summary Report an Ad click
+     * @param adId
+     * @param teamId
+     */
+    reportClick(params: { 'adId': string; 'teamId': string;  }, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<any> {
+        const fetchArgs = DefaultApiFetchParamCreator.reportClick(params, options);
+        return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return response;
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+    /**
+     * Reports an impression for an Ad  An impression should be reported whenever a user views an Ad.  When reporting an impression, the Product Ad ID that was provided when generating the ad must be included in the path of the request. As with other endpoints, the generated JWT must also be provided as authentication.
+     * @summary Report an Ad impression
+     * @param adId
+     * @param teamId
+     */
+    reportImpression(params: { 'adId': string; 'teamId': string;  }, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<any> {
+        const fetchArgs = DefaultApiFetchParamCreator.reportImpression(params, options);
+        return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return response;
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+};
+
+/**
  * DefaultApi - object-oriented interface
  */
 export class DefaultApi extends BaseAPI {
