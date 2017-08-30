@@ -1,60 +1,61 @@
-import {DefaultApi, DefaultApiApiKeys} from './generated/api';
-import {Payload} from './Payload';
-import {PayloadSigner} from './PayloadSigner';
+import { DefaultApi } from './api';
+
+type TokenProvider = () => Promise<string>;
 
 export class CitrusAd {
-
+  private static MAX_RETRIES = 3;
   private api: DefaultApi;
-  private payload: Payload;
   private token: string;
 
-  private constructor(private payloadSigner: PayloadSigner, private issuerId: string, private apiAddress: string) {
-    this.api = new DefaultApi(apiAddress);
+  static init(getToken: TokenProvider, apiAddress: string): CitrusAd {
+    return new CitrusAd(getToken, apiAddress);
   }
 
-  static init(payloadSigner: PayloadSigner, issuerId: string, apiAddress: string): CitrusAd {
-    return new CitrusAd(payloadSigner, issuerId, apiAddress);
+  private constructor(private getToken: TokenProvider, private apiAddress: string) {
+    this.api = new DefaultApi(undefined, apiAddress);
   }
 
-  private async checkToken() {
-    if (this.token == null || this.payload == null || this.payload.isExpired()) {
-      this.payload = new Payload(this.issuerId);
-      this.token = await this.payloadSigner(this.payload);
-      this.api.setApiKey(DefaultApiApiKeys.TokenSecurity, this.token);
+  async reportImpression(adId: string, teamId: string): Promise<void> {
+    return this._executeAction(() => this.api.reportImpression({adId, teamId}, this._getAdditionalOptions()), 0);
+  }
+
+  async reportClick(adId: string, teamId: string): Promise<void> {
+    return this._executeAction(() => this.api.reportClick({adId, teamId}, this._getAdditionalOptions()), 0);
+  }
+
+  private async checkToken(force?: true) {
+    if (this.token == null || force) {
+      this.token = await this.getToken();
     }
   }
 
-  async registerImpression(adId: string): Promise<boolean> {
-    const retries = 3;
-    let result = false;
-    while (retries > 0) {
-      try {
-        await this.checkToken();
-        await this.api.registerImpression(adId);
-        result = true;
-        break;
-      } catch (err) {
-        console.log(err);
-        continue;
+  private _getAdditionalOptions() {
+    return { headers: { Authorization: 'Bearer ' + this.token }};
+  }
+
+  private _timeout(milliseconds: number) {
+      return new Promise(resolve => setTimeout(resolve, milliseconds));
+  }
+
+  private async _executeAction(action: () => Promise<any>, retries: number = 0): Promise<void> {
+    try {
+      await this.checkToken();
+      await action();
+      return;
+    } catch (err) {
+      if (retries < CitrusAd.MAX_RETRIES) {
+        if (err.status === 401) {
+          // If checkToken throws an exception do we want to catch it?
+          await this.checkToken(true);
+        }
+        retries++;
+        await this._timeout(retries * 1000);
+        return this._executeAction(action, retries);
+      } else {
+        throw err;
       }
     }
-    return result;
   }
 
-  async registerClick(adId: string): Promise<boolean> {
-    const retries = 3;
-    let result = false;
-    while (retries > 0) {
-      try {
-        await this.checkToken();
-        await this.api.registerClick(adId);
-        result = true;
-        break;
-      } catch (err) {
-        console.log(err);
-        continue;
-      }
-    }
-    return result;
-  }
 }
+

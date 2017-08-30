@@ -1,0 +1,1430 @@
+swagger: '2.0'
+info:
+  title: Citrus Integration API
+  description: Citrus Integration API
+  version: 0.0.1
+host: integration.citrusad.com
+schemes:
+  - https
+securityDefinitions:
+  TokenSecurity:
+    description: |
+      For accessing the API a valid JWT token must be passed in all queries in
+      the 'Authorization' header. The following syntax must be used in the
+      'Authorization' header.
+
+      Bearer xxx.yyy.zzz
+    type: apiKey
+    name: Authorization
+    in: header
+security:
+  - TokenSecurity: []
+basePath: /v1
+produces:
+  - application/json
+paths:
+  /ads/generate:
+    post:
+      summary: Generate an Ad
+      description: >
+        Generates and returns ads.
+
+
+        To receive relevant ads, a context object should be provided as input.
+        The Context object includes information
+
+        about where the ad is going to be shown and to whom.
+      operationId: generateProductAds
+      parameters:
+        - in: body
+          name: context
+          required: true
+          schema:
+            $ref: '#/definitions/Context'
+      responses:
+        '200':
+          description: |
+            On success returns a list of product ads.
+          schema:
+            $ref: '#/definitions/GenerateAdsResponse'
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+  /ads/purchase:
+    post:
+      summary: Report a purchase
+      description: >
+        Reports a purchase for one or more Ads
+
+
+        A purchase should be reported whenever a user clicks on an Ad and
+        subsequently purchases the item.
+
+        It is the responsibility of the backend to report a purchase that
+        involved an Ad. When a purchase occurs,
+
+        this endpoint should be called with the IDs of the other ads that
+        resulted in the purchase.
+
+
+        This endpoint takes a list of IDs and records the purchase event. This
+        purchase is tied to the provided Order ID
+
+        for future tracking and reference. It is the reposability of the caller
+        to generate an Order ID -- we suggest
+
+        a version 4 UUID or whatever unique identifier already used to identify
+        an Order.
+      operationId: reportPurchase
+      parameters:
+        - name: teamId
+          in: query
+          required: true
+          type: string
+        - name: Purchase
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Purchase'
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+  '/ads/{adId}':
+    get:
+      summary: Retrieve an Ad
+      description: |
+        Retrieves an Ad.
+      operationId: getProductAd
+      parameters:
+        - in: path
+          name: adId
+          type: string
+          required: true
+        - name: teamId
+          in: query
+          required: true
+          type: string
+      responses:
+        '200':
+          description: >
+            On success returns information about a previously generated product
+            ad.
+          schema:
+            $ref: '#/definitions/ProductAd'
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+  '/ads/{adId}/click':
+    post:
+      summary: Report an Ad click
+      description: >
+        Reports a click for an Ad
+
+
+        A Click should be reported whenever a user clicks on an Ad.
+
+
+        Similar to impressions, the Product Ad ID must be included in the path
+        of the request along with the appropriate
+
+        JWT.
+      operationId: reportClick
+      parameters:
+        - name: adId
+          in: path
+          type: string
+          required: true
+        - name: teamId
+          in: query
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+  '/ads/{adId}/impression':
+    post:
+      summary: Report an Ad impression
+      description: >
+        Reports an impression for an Ad
+
+
+        An impression should be reported whenever a user views an Ad.
+
+
+        When reporting an impression, the Product Ad ID that was provided when
+        generating the ad must be included
+
+        in the path of the request. As with other endpoints, the generated JWT
+        must also be provided as authentication.
+      operationId: reportImpression
+      parameters:
+        - name: adId
+          in: path
+          type: string
+          required: true
+        - name: teamId
+          in: query
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+  /catalogs:
+    post:
+      summary: Create or Update Catalogs
+      description: |
+        Creates or Updates the list of provided catalogs.
+      operationId: pushCatalogs
+      parameters:
+        - name: teamId
+          in: query
+          required: true
+          type: string
+        - in: body
+          name: pushCatalogsRequest
+          schema:
+            $ref: '#/definitions/PushCatalogsRequest'
+          required: true
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    get:
+      summary: Retrieve a list of Catalogs
+      description: >
+        Returns a list of catalogs. The catalogs are returned sorted by creation
+        date with
+
+        the most recent catalogs appearing first.
+      operationId: getCatalogs
+      parameters:
+        - name: teamId
+          in: query
+          type: string
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          default: 5
+          format: int32
+        - name: skip
+          in: query
+          type: integer
+          default: 5
+          format: int32
+        - name: catalogIds
+          in: query
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: Returns a list of Catalogs
+          schema:
+            $ref: '#/definitions/GetCatalogsResponse'
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+  '/catalogs/{teamId}/{catalogId}':
+    post:
+      summary: Update a Catalog
+      description: |
+        Updates the catalog.
+        Provide the id used in the previous request when creating the catalog.
+      operationId: pushCatalog
+      parameters:
+        - in: path
+          name: teamId
+          type: string
+          required: true
+        - in: path
+          name: catalogId
+          type: string
+          required: true
+        - in: body
+          required: true
+          name: UpdateCatalogRequest
+          schema:
+            $ref: '#/definitions/UpdateCatalogRequest'
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    get:
+      summary: Get a Catalog
+      description: |
+        Retrieves the catalog.
+        Provide the id used in the previous request when creating the catalog.
+      operationId: getCatalog
+      parameters:
+        - in: path
+          name: teamId
+          type: string
+          required: true
+        - in: path
+          name: catalogId
+          type: string
+          required: true
+      responses:
+        '200':
+          description: Returns a Catalog
+          schema:
+            $ref: '#/definitions/Catalog'
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    delete:
+      summary: Delete a Catalog
+      description: |
+        Deletes the catalog.
+        Provide the id used in the previous request when creating the catalog.
+      operationId: deleteCatalog
+      parameters:
+        - in: path
+          name: teamId
+          type: string
+          required: true
+        - in: path
+          name: catalogId
+          type: string
+          required: true
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+  /customers:
+    post:
+      summary: Create or Update Customers
+      description: |
+        Creates or Updates the list of provided customers.
+      operationId: pushCustomers
+      parameters:
+        - name: teamId
+          in: query
+          required: true
+          type: string
+        - in: body
+          name: pushCustomersRequest
+          schema:
+            $ref: '#/definitions/PushCustomersRequest'
+          required: true
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    get:
+      summary: Retrieve a list of Customers
+      description: >
+        Returns a list of customers. The customers are returned sorted by
+        creation date with
+
+        the most recent customers appearing first.
+      operationId: getCustomers
+      parameters:
+        - name: teamId
+          in: query
+          type: string
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          default: 5
+          format: int32
+        - name: skip
+          in: query
+          type: integer
+          default: 0
+          format: int32
+        - name: customerIds
+          in: query
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: Returns a list of Customers
+          schema:
+            $ref: '#/definitions/GetCustomersResponse'
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+  '/customers/{teamId}/{customerId}':
+    post:
+      summary: Update a Customer
+      description: |
+        Updates a customer.
+        Provide the id used in the previous request when creating the customer.
+      operationId: pushCustomer
+      parameters:
+        - in: path
+          name: teamId
+          type: string
+          required: true
+        - in: path
+          name: customerId
+          type: string
+          required: true
+        - in: body
+          required: true
+          name: UpdateCustomerRequest
+          schema:
+            $ref: '#/definitions/UpdateCustomerRequest'
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    get:
+      summary: Retrieve a Customer
+      description: |
+        Retrieves the customer.
+        Provide the id used in the previous request when creating the customer.
+      operationId: getCustomer
+      parameters:
+        - in: path
+          name: teamId
+          type: string
+          required: true
+        - in: path
+          name: customerId
+          type: string
+          required: true
+      responses:
+        '200':
+          description: Returns a Customer
+          schema:
+            $ref: '#/definitions/Customer'
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    delete:
+      summary: Delete a Customer
+      description: |
+        Deletes the customer.
+        Provide the id used in the previous request when creating the customer.
+      operationId: deleteCustomer
+      parameters:
+        - in: path
+          name: teamId
+          type: string
+          required: true
+        - in: path
+          name: customerId
+          type: string
+          required: true
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+  /orders:
+    post:
+      summary: Create or Update Orders
+      description: |
+        Creates or Updates the list of provided orders.
+      operationId: pushOrders
+      parameters:
+        - name: teamId
+          in: query
+          required: true
+          type: string
+        - in: body
+          name: pushOrdersRequest
+          schema:
+            $ref: '#/definitions/PushOrdersRequest'
+          required: true
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    get:
+      summary: Retrieve a list of Orders
+      description: >
+        Returns a list of orders. The orders are returned sorted by creation
+        date with
+
+        the most recent orders appearing first.
+      operationId: getOrders
+      parameters:
+        - name: teamId
+          in: query
+          type: string
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          default: 5
+          format: int32
+        - name: skip
+          in: query
+          type: integer
+          default: 5
+          format: int32
+        - name: orderIds
+          in: query
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: Returns a list of Orders
+          schema:
+            $ref: '#/definitions/GetOrdersResponse'
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+  '/orders/{teamId}/{orderId}':
+    post:
+      summary: Update an Order
+      description: |
+        Updates an order.
+        Provide the id used in the previous request when creating the orders.
+      operationId: pushOrder
+      parameters:
+        - in: path
+          name: teamId
+          type: string
+          required: true
+        - in: path
+          name: orderId
+          type: string
+          required: true
+        - in: body
+          required: true
+          name: UpdateOrderRequest
+          schema:
+            $ref: '#/definitions/UpdateOrderRequest'
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    get:
+      summary: Retrieve an Order
+      description: |
+        Retrieves an order.
+        Provide the id used in the previous request when creating the orders.
+      operationId: getOrder
+      parameters:
+        - in: path
+          name: teamId
+          type: string
+          required: true
+        - in: path
+          name: orderId
+          type: string
+          required: true
+      responses:
+        '200':
+          description: Returns an Order
+          schema:
+            $ref: '#/definitions/Order'
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    delete:
+      summary: Delete an Order
+      description: |
+        Deletes the orders.
+        Provide the id used in the previous request when creating the orders.
+      operationId: deleteOrder
+      parameters:
+        - in: path
+          name: teamId
+          type: string
+          required: true
+        - in: path
+          name: orderId
+          type: string
+          required: true
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+  /products:
+    post:
+      summary: Create or Update Products
+      description: |
+        Creates or Updates the list of provided products.
+      operationId: pushProducts
+      parameters:
+        - name: teamId
+          in: query
+          required: true
+          type: string
+        - in: body
+          name: pushProductsRequest
+          schema:
+            $ref: '#/definitions/PushProductsRequest'
+          required: true
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    get:
+      summary: Retrieve a list of Products
+      description: >
+        Returns a list of products. The products are returned sorted by creation
+        date with
+
+        the most recent products appearing first.
+      operationId: getProducts
+      parameters:
+        - name: teamId
+          in: query
+          type: string
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          default: 5
+          format: int32
+        - name: skip
+          in: query
+          type: integer
+          default: 5
+          format: int32
+        - name: productIds
+          in: query
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: Returns a list of Products
+          schema:
+            $ref: '#/definitions/GetProductsResponse'
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+  '/products/{teamId}/{productGtin}':
+    post:
+      summary: Update a Product
+      description: |
+        Updates the product.
+        Provide the id used in the previous request when creating the product.
+      operationId: pushProduct
+      parameters:
+        - in: path
+          name: teamId
+          type: string
+          required: true
+        - in: path
+          name: productGtin
+          description: >-
+            The custom id specified when creating the prodict, or it's GTIN if
+            none was specified
+          type: string
+          required: true
+        - in: body
+          required: true
+          name: UpdateProductRequest
+          schema:
+            $ref: '#/definitions/UpdateProductRequest'
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    get:
+      summary: Retrieve a Product
+      description: |
+        Retrieves the product.
+        Provide the id used in the previous request when creating the product.
+      operationId: getProduct
+      parameters:
+        - in: path
+          name: teamId
+          type: string
+          required: true
+        - in: path
+          name: productGtin
+          description: The GTIN of the product
+          type: string
+          required: true
+      responses:
+        '200':
+          description: Returns a Product
+          schema:
+            $ref: '#/definitions/Product'
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    delete:
+      summary: Delete a Product
+      description: |
+        Deletes the product.
+        Provide the id used in the previous request when creating the product.
+      operationId: deleteProduct
+      parameters:
+        - in: path
+          name: teamId
+          type: string
+          required: true
+        - in: path
+          name: productGtin
+          description: The GTIN of the product
+          type: string
+          required: true
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+definitions:
+  ErrorResponse:
+    type: object
+    required:
+      - message
+    properties:
+      message:
+        type: string
+      additionalInfo:
+        type: array
+        items:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+              enum:
+                - Required
+                - Malformed
+                - Unknown
+  Context:
+    type: object
+    required:
+      - teamId
+      - catalogId
+    properties:
+      teamId:
+        type: string
+      catalogId:
+        type: string
+      customerId:
+        type: string
+      searchTerm:
+        type: string
+      categoryHierarchy:
+        type: string
+      substitutedProductGtin:
+        type: string
+      pageType:
+        type: string
+        enum:
+          - Home
+          - Category
+          - Search
+          - Specials
+          - PastOrder
+          - Substitution
+          - Samples
+      currentCartItems:
+        type: array
+        items:
+          $ref: '#/definitions/OrderItem'
+      maxNumberOfAds:
+        type: integer
+  GenerateAdsResponse:
+    type: object
+    properties:
+      ads:
+        type: array
+        items:
+          $ref: '#/definitions/ProductAd'
+  ProductAd:
+    type: object
+    required:
+      - gtin
+      - id
+    properties:
+      id:
+        type: string
+      gtin:
+        type: string
+      price:
+        type: number
+  Purchase:
+    type: object
+    required:
+      - orderId
+      - productAdIds
+    properties:
+      orderId:
+        type: string
+      productAdIds:
+        type: array
+        minItems: 1
+        items:
+          type: string
+  Catalog:
+    type: object
+    required:
+      - catalogId
+      - catalogName
+    properties:
+      catalogId:
+        type: string
+      catalogName:
+        type: string
+      products:
+        type: array
+        minItems: 1
+        items:
+          $ref: '#/definitions/CatalogProduct'
+  CatalogProduct:
+    type: object
+    required:
+      - gtin
+    properties:
+      gtin:
+        type: string
+      inventory:
+        type: number
+      price:
+        type: number
+  GetCatalogsResponse:
+    type: object
+    required:
+      - catalogs
+    properties:
+      catalogs:
+        type: array
+        items:
+          $ref: '#/definitions/Catalog'
+  PushCatalogsRequest:
+    type: object
+    required:
+      - catalogs
+    properties:
+      catalogs:
+        type: array
+        minItems: 1
+        items:
+          $ref: '#/definitions/Catalog'
+  UpdateCatalogRequest:
+    type: object
+    required:
+      - catalog
+    properties:
+      catalog:
+        $ref: '#/definitions/Catalog'
+  Customer:
+    type: object
+    required:
+      - customerId
+    properties:
+      customerId:
+        type: string
+      orderIds:
+        type: array
+        items:
+          type: string
+      yearOfBirth:
+        type: integer
+      gender:
+        type: string
+        enum:
+          - Male
+          - Female
+          - Other
+      suburb:
+        type: string
+      postcode:
+        type: string
+  GetCustomersResponse:
+    type: object
+    required:
+      - customers
+    properties:
+      customers:
+        type: array
+        items:
+          $ref: '#/definitions/Customer'
+  PushCustomersRequest:
+    type: object
+    required:
+      - customers
+    properties:
+      customers:
+        type: array
+        minItems: 1
+        items:
+          $ref: '#/definitions/Customer'
+  UpdateCustomerRequest:
+    type: object
+    required:
+      - customer
+    properties:
+      customer:
+        $ref: '#/definitions/Customer'
+  GetOrdersResponse:
+    type: object
+    required:
+      - orders
+    properties:
+      orders:
+        type: array
+        items:
+          $ref: '#/definitions/Order'
+  Order:
+    type: object
+    required:
+      - orderId
+      - orderDate
+      - orderItems
+    properties:
+      orderId:
+        type: string
+      orderDate:
+        type: string
+        format: date-time
+      orderItems:
+        type: array
+        minItems: 1
+        items:
+          $ref: '#/definitions/OrderItem'
+  OrderItem:
+    type: object
+    required:
+      - gtin
+      - quantity
+      - regularUnitPrice
+      - totalOrderItemPriceAfterDiscounts
+    properties:
+      gtin:
+        type: string
+      quantity:
+        type: number
+      regularUnitPrice:
+        type: number
+      totalOrderItemPriceAfterDiscounts:
+        type: number
+      substitutedFor:
+        $ref: '#/definitions/OrderItem'
+  PushOrdersRequest:
+    type: object
+    required:
+      - orders
+    properties:
+      orders:
+        type: array
+        minItems: 1
+        items:
+          $ref: '#/definitions/Order'
+  UpdateOrderRequest:
+    type: object
+    required:
+      - order
+    properties:
+      order:
+        $ref: '#/definitions/Order'
+  GetProductsResponse:
+    type: object
+    required:
+      - products
+    properties:
+      products:
+        type: array
+        items:
+          $ref: '#/definitions/Product'
+  Product:
+    type: object
+    required:
+      - gtin
+    properties:
+      gtin:
+        type: string
+      name:
+        type: string
+      category:
+        type: string
+      size:
+        type: string
+      tags:
+        type: array
+        items:
+          type: string
+      images:
+        type: array
+        items:
+          type: string
+      regularPrice:
+        type: number
+  PushProductsRequest:
+    type: object
+    required:
+      - products
+    properties:
+      products:
+        type: array
+        minItems: 1
+        items:
+          $ref: '#/definitions/Product'
+  UpdateProductRequest:
+    type: object
+    required:
+      - product
+    properties:
+      product:
+        $ref: '#/definitions/Product'
+responses:
+  ErrorResponse:
+    description: An error response.
+    schema:
+      $ref: '#/definitions/ErrorResponse'
+
