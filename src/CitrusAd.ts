@@ -7,20 +7,24 @@
 
 import { DefaultApi } from './CitrusApi';
 import { CitrusTrack } from './CitrusTrack';
-type TokenProvider = () => Promise<string>;
+
+interface IOptions {
+  disableTracking?: boolean;
+}
 
 export class CitrusAd {
+  // Initial attempt plus 3 retries
   private static MAX_RETRIES = 3;
   private api: DefaultApi;
   private citrusTrack: CitrusTrack;
 
-  static init(disableTracking: boolean, apiAddress: string): CitrusAd {
-    return new CitrusAd(disableTracking, apiAddress);
+  static init(options: IOptions = {}, apiAddress: string): CitrusAd {
+    return new CitrusAd(options, apiAddress);
   }
 
-  private constructor(private enableTracking: boolean, private apiAddress: string) {
+  private constructor(private options: IOptions = {}, private apiAddress: string) {
     this.api = new DefaultApi(undefined, apiAddress);
-    this.citrusTrack = new CitrusTrack(enableTracking);
+    this.citrusTrack = new CitrusTrack(options.disableTracking);
   }
 
   async reportImpression(adId: string, teamId: string): Promise<Response> {
