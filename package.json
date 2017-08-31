@@ -8,7 +8,9 @@
     "test": "mocha --require ts-node/register test/*.test.ts",
     "build": "webpack",
     "clean": "rm -rf dist",
-    "analyse": "webpack -p -j | sed -n '1!p' | webpack-bundle-size-analyzer"
+    "analyse": "webpack -p -j | sed -n '1!p' | webpack-bundle-size-analyzer",
+    "lint": "tslint --project tsconfig.json --format stylish",
+    "lint-fix": "npm run lint -- --fix"
   },
   "repository": {
     "type": "git",
@@ -27,11 +29,13 @@
     "@types/jasmine": "^2.5.47",
     "@types/jasmine-ajax": "^3.1.36",
     "@types/sinon": "^2.3.3",
+    "@types/uuid": "^3.4.1",
     "babel-core": "^6.24.1",
     "babel-loader": "^7.0.0",
     "babel-polyfill": "^6.23.0",
     "babel-preset-env": "^1.5.1",
     "cookies-js": "^1.2.3",
+    "fingerprintjs2": "^1.5.1",
     "isomorphic-fetch": "^2.2.1",
     "jasmine": "^2.6.0",
     "jasmine-ajax": "^3.3.1",
@@ -51,12 +55,11 @@
     "ts-node": "^3.3.0",
     "tslint": "^5.7.0",
     "tslint-config-standard": "^6.0.1",
-    "typescript": "^2.3.2",
+    "typescript": "^2.4.2",
     "uglifyjs-webpack-plugin": "^0.4.6",
     "uuid": "^3.1.0",
-    "webpack": "^2.5.1"
+    "webpack": "^2.5.1",
+    "tslint-config-airbnb": "^5.2.1"
   },
-  "dependencies": {
-    "@types/uuid": "^3.4.1"
-  }
+  "dependencies": {}
 }
