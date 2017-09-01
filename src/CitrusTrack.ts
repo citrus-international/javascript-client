@@ -34,7 +34,7 @@ export class CitrusTrack {
           resolve(newCitrusLSID);
         }
       } else {
-        resolve('');
+        resolve(null);
       }
     });
   }
