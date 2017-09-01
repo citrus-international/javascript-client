@@ -9,7 +9,7 @@ describe('Test suit for CitrusAd JS Library', () => {
   describe('can report', () => {
     let citrusAd: CitrusAd = null;
     beforeEach(() => {
-      citrusAd = CitrusAd.init(false, DEV_ENDPOINT);
+      citrusAd = CitrusAd.init({ overrideApiAddress: DEV_ENDPOINT });
     });
 
     it('impression', () => {
