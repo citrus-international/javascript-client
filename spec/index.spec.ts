@@ -1,30 +1,25 @@
-import {CitrusAd} from '../src/CitrusAd';
-import {ContextInformation} from '../src/generated/api';
-import PageTypeEnum = ContextInformation.PageTypeEnum;
+import { CitrusAd } from '../src/CitrusAd';
 
-// This test needs a local integration service running with
-// authentication filter disabled to work.
-// TODO: Introduce mocks for ajax requests
+const DEV_ENDPOINT = 'https://dev-integration.citrusad.com/v1';
 
-describe('Test suit for CitrusAd JS Library', function () {
+describe('Test suit for CitrusAd JS Library', () => {
 
-  const citrusAd = CitrusAd.init(
-      payload => Promise.resolve('test'),
-      'e-commerce-provider-id',
-      'http://localhost:8080');
-
-  it("registers an impression", done => {
-    citrusAd.registerImpression("test").then(result => {
-      expect(result).toBe(true);
-      done();
+  const TEAM_ID = 'd9fb0607-6f5b-4468-8c1b-89bbcc9a5e65';
+  const RANDOM_AD_ID = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5);
+  describe('can report', () => {
+    let citrusAd: CitrusAd = null;
+    beforeEach(() => {
+      citrusAd = CitrusAd.init({ overrideApiAddress: DEV_ENDPOINT });
     });
-  });
 
-  it("register a click", done => {
-    citrusAd.registerClick("test").then(result => {
-      expect(result).toBe(true);
-      done();
+    it('impression', () => {
+      return citrusAd.reportImpression(RANDOM_AD_ID, TEAM_ID);
     });
+
+    it('click', () => {
+      return citrusAd.reportClick(RANDOM_AD_ID, TEAM_ID);
+    });
+
   });
 
 });

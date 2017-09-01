@@ -4,10 +4,13 @@
   "description": "CitrusAd JavaScript Library",
   "main": "index.js",
   "scripts": {
-    "test": "karma start karma.conf.js",
+    "e2e": "karma start karma.conf.js",
+    "test": "mocha --require ts-node/register test/*.test.ts",
     "build": "webpack",
     "clean": "rm -rf dist",
-    "analyise": "webpack -p -j | sed -n '1!p' | webpack-bundle-size-analyzer"
+    "analyse": "webpack -p -j | sed -n '1!p' | webpack-bundle-size-analyzer",
+    "lint": "tslint --project tsconfig.json --format stylish",
+    "lint-fix": "npm run lint -- --fix"
   },
   "repository": {
     "type": "git",
@@ -21,32 +24,42 @@
   },
   "homepage": "https://github.com/citrus-international/javascript-client#readme",
   "devDependencies": {
+    "@types/core-js": "^0.9.43",
+    "@types/isomorphic-fetch": "0.0.34",
     "@types/jasmine": "^2.5.47",
     "@types/jasmine-ajax": "^3.1.36",
-    "@types/jquery": "^2.0.45",
-    "@types/uuid": "^2.0.29",
+    "@types/sinon": "^2.3.3",
+    "@types/uuid": "^3.4.1",
     "babel-core": "^6.24.1",
     "babel-loader": "^7.0.0",
     "babel-polyfill": "^6.23.0",
     "babel-preset-env": "^1.5.1",
+    "cookies-js": "^1.2.3",
+    "fingerprintjs2": "^1.5.1",
+    "isomorphic-fetch": "^2.2.1",
     "jasmine": "^2.6.0",
     "jasmine-ajax": "^3.3.1",
+    "json-refs": "^3.0.0",
     "karma": "^1.7.0",
     "karma-chrome-launcher": "^2.1.1",
     "karma-jasmine": "^1.1.0",
     "karma-jasmine-ajax": "^0.1.13",
     "karma-phantomjs-launcher": "^1.0.4",
+    "karma-sinon": "^1.0.5",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.3",
+    "mocha": "^3.5.0",
+    "sinon": "^3.2.1",
     "source-map-loader": "^0.2.1",
-    "ts-loader": "^2.1.0",
-    "tslint": "^5.2.0",
-    "tslint-loader": "^3.5.3",
-    "typescript": "^2.3.2",
-    "webpack": "^2.5.1"
+    "ts-loader": "^2.3.4",
+    "ts-node": "^3.3.0",
+    "tslint": "^5.7.0",
+    "tslint-config-standard": "^6.0.1",
+    "typescript": "^2.4.2",
+    "uglifyjs-webpack-plugin": "^0.4.6",
+    "uuid": "^3.1.0",
+    "webpack": "^2.5.1",
+    "tslint-config-airbnb": "^5.2.1"
   },
-  "dependencies": {
-    "jquery": "^3.2.1",
-    "uuid": "^3.0.1"
-  }
+  "dependencies": {}
 }

@@ -2,6 +2,12 @@ var webpackConfig = require('./webpack.config');
 
 module.exports = function(config) {
   config.set({
+    customLaunchers: {
+      chrome_without_security: {
+        base: 'Chrome',
+        flags: ['--disable-web-security']
+      },
+    },
     basePath: '',
     frameworks: ['jasmine-ajax', 'jasmine'],
     files: [
@@ -22,8 +28,8 @@ module.exports = function(config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: false,
-    browsers: ['Chrome'],
-    singleRun: true,
+    browsers: ['chrome_without_security'],
+    singleRun: false,
     concurrency: Infinity,
     mime: { 'text/x-typescript': ['ts','tsx'] }
   })

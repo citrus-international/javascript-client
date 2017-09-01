@@ -1,60 +1,64 @@
-import {DefaultApi, DefaultApiApiKeys} from './generated/api';
-import {Payload} from './Payload';
-import {PayloadSigner} from './PayloadSigner';
+/**
+ * Tracking Disabled:
+ * impression?teamId=d9fb0607-6f5b-4468-8c1b-89bbcc9a5e65&lsid=&bfp=&cookies=false
+ * Tracking Enabled:
+ * impression?teamId=teamId&lsid=0719cec6-224a-46d5-aa5d-94c2a0ce43b6&bfp=6f2692d5f66b88906ef73683ef517bf6&cookies=true
+ */
+
+import { DefaultApi } from './CitrusApi';
+import { CitrusTrack } from './CitrusTrack';
+
+interface IOptions {
+  disableTracking?: boolean;
+  overrideApiAddress?: string;
+}
 
 export class CitrusAd {
-
+  // Initial attempt plus 3 retries
+  private static MAX_RETRIES = 3;
   private api: DefaultApi;
-  private payload: Payload;
-  private token: string;
+  private citrusTrack: CitrusTrack;
 
-  private constructor(private payloadSigner: PayloadSigner, private issuerId: string, private apiAddress: string) {
-    this.api = new DefaultApi(apiAddress);
+  static init(options: IOptions = {}): CitrusAd {
+    return new CitrusAd(options);
   }
 
-  static init(payloadSigner: PayloadSigner, issuerId: string, apiAddress: string): CitrusAd {
-    return new CitrusAd(payloadSigner, issuerId, apiAddress);
+  private constructor(private options: IOptions = {}) {
+    this.api = new DefaultApi(undefined, options.overrideApiAddress);
+    this.citrusTrack = new CitrusTrack(options.disableTracking);
   }
 
-  private async checkToken() {
-    if (this.token == null || this.payload == null || this.payload.isExpired()) {
-      this.payload = new Payload(this.issuerId);
-      this.token = await this.payloadSigner(this.payload);
-      this.api.setApiKey(DefaultApiApiKeys.TokenSecurity, this.token);
-    }
+  async reportImpression(adId: string, teamId: string): Promise<Response> {
+    const trackingParams = await this.citrusTrack.getTrackingParams();
+    return this.executeAction(
+      () => this.api.reportImpression({ adId, teamId, ...trackingParams }),
+    );
   }
 
-  async registerImpression(adId: string): Promise<boolean> {
-    const retries = 3;
-    let result = false;
-    while (retries > 0) {
-      try {
-        await this.checkToken();
-        await this.api.registerImpression(adId);
-        result = true;
-        break;
-      } catch (err) {
-        console.log(err);
-        continue;
+  async reportClick(adId: string, teamId: string): Promise<Response> {
+    const trackingParams = await this.citrusTrack.getTrackingParams();
+    return this.executeAction(
+      () => this.api.reportClick({ adId, teamId, ...trackingParams }),
+    );
+  }
+
+  private timeout(seconds: number) {
+    return new Promise(resolve => setTimeout(resolve, seconds * 1000));
+  }
+
+  private async executeAction(action: () => Promise<any>, retries: number = 0): Promise<Response> {
+    try {
+      return await action();
+    } catch (err) {
+      if (retries < CitrusAd.MAX_RETRIES) {
+        const incRetries = retries + 1;
+        await this.timeout(incRetries);
+        return this.executeAction(action, incRetries);
+      } else {
+        throw err;
       }
     }
-    return result;
   }
 
-  async registerClick(adId: string): Promise<boolean> {
-    const retries = 3;
-    let result = false;
-    while (retries > 0) {
-      try {
-        await this.checkToken();
-        await this.api.registerClick(adId);
-        result = true;
-        break;
-      } catch (err) {
-        console.log(err);
-        continue;
-      }
-    }
-    return result;
-  }
 }
+

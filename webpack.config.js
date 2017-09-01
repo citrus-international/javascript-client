@@ -1,9 +1,10 @@
 var path = require('path');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = {
   entry: ['babel-polyfill', './src/CitrusAd.ts'],
   output: {
-    filename: 'CitrusAd.js',
+    filename: 'citrus.js',
     path: path.resolve(__dirname, 'dist'),
     libraryTarget: 'umd'
   },
@@ -23,5 +24,10 @@ module.exports = {
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js"]
-  }
+  },
+  plugins: [
+    new UglifyJSPlugin({
+      compress: { unused: true, dead_code: true },
+    })
+  ]
 }
