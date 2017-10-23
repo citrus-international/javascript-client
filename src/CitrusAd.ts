@@ -28,17 +28,17 @@ export class CitrusAd {
     this.citrusTrack = new CitrusTrack(options.disableTracking);
   }
 
-  async reportImpression(adId: string): Promise<Response> {
+  async reportImpression(adId: string, teamId: string): Promise<Response> {
     const trackingParams = await this.citrusTrack.getTrackingParams();
     return this.executeAction(
-      () => this.api.reportImpression({ adId, ...trackingParams }),
+      () => this.api.reportImpression({ adId, teamId, ...trackingParams }),
     );
   }
 
-  async reportClick(adId: string): Promise<Response> {
+  async reportClick(adId: string, teamId: string): Promise<Response> {
     const trackingParams = await this.citrusTrack.getTrackingParams();
     return this.executeAction(
-      () => this.api.reportClick({ adId, ...trackingParams }),
+      () => this.api.reportClick({ adId, teamId, ...trackingParams }),
     );
   }
 

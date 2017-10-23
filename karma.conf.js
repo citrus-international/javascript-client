@@ -1,18 +1,17 @@
 var webpackConfig = require('./webpack.config');
 
-module.exports = function (config) {
+module.exports = function(config) {
   config.set({
     customLaunchers: {
       chrome_without_security: {
         base: 'Chrome',
-        // flags: ['--disable-web-security']
+        flags: ['--disable-web-security']
       },
     },
     basePath: '',
     frameworks: ['jasmine-ajax', 'jasmine'],
     files: [
-      'dist/citrus.js',
-      'spec/index.spec.ts'
+        'spec/index.spec.ts'
     ],
     exclude: [
     ],
@@ -32,6 +31,6 @@ module.exports = function (config) {
     browsers: ['chrome_without_security'],
     singleRun: false,
     concurrency: Infinity,
-    mime: { 'text/x-typescript': ['ts', 'tsx'] }
+    mime: { 'text/x-typescript': ['ts','tsx'] }
   })
 }
