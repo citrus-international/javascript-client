@@ -3,9 +3,10 @@ var webpackConfig = require('./webpack.config');
 module.exports = function (config) {
   config.set({
     customLaunchers: {
+      // Not current used by can be used to test if CORS is on
       chrome_without_security: {
         base: 'Chrome',
-        // flags: ['--disable-web-security']
+        flags: ['--disable-web-security']
       },
     },
     basePath: '',
@@ -29,8 +30,9 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: false,
-    browsers: ['chrome_without_security'],
-    singleRun: false,
+    browsers: ['Chrome'],
+    // Turn this off to debug
+    singleRun: true,
     concurrency: Infinity,
     mime: { 'text/x-typescript': ['ts', 'tsx'] }
   })
