@@ -19,7 +19,7 @@ import * as assign from 'core-js/library/fn/object/assign';
 interface Dictionary<T> { [index: string]: T; }
 export type FetchAPI = (url: string, init?: any) => Promise<any>;
 
-const BASE_PATH = 'https://integration.citrusad.com/v1'.replace(/\/+$/, '');
+const BASE_PATH = 'https://au-integration.citrusad.com/v1'.replace(/\/+$/, '');
 
 export interface FetchArgs {
   url: string;
@@ -67,7 +67,7 @@ export const DefaultApiFetchParamCreator = {
       throw new Error('Missing required parameter cookies when calling reportClick');
     }
 
-    const baseUrl = `/ads/{adId}/click`
+    const baseUrl = `/resource/second/{adId}`
             .replace(`{${'adId'}}`, `${ params['adId'] }`);
     const urlObj = url.parse(baseUrl, true);
     urlObj.query = assign({}, urlObj.query, {
@@ -76,7 +76,7 @@ export const DefaultApiFetchParamCreator = {
       bfp: params['bfp'],
       cookies: params['cookies'],
     });
-    const fetchOptions: RequestInit = assign({}, { method: 'POST' }, options);
+    const fetchOptions: RequestInit = assign({}, { method: 'GET' }, options);
 
     const contentTypeHeader: Dictionary<string> = {};
     if (contentTypeHeader) {
@@ -107,7 +107,7 @@ export const DefaultApiFetchParamCreator = {
       throw new Error('Missing required parameter cookies when calling reportImpression');
     }
 
-    const baseUrl = `/ads/{adId}/impression`
+    const baseUrl = `/resource/first/{adId}`
             .replace(`{${'adId'}}`, `${ params['adId'] }`);
     const urlObj = url.parse(baseUrl, true);
     urlObj.query = assign({}, urlObj.query, {
@@ -116,7 +116,7 @@ export const DefaultApiFetchParamCreator = {
       bfp: params['bfp'],
       cookies: params['cookies'],
     });
-    const fetchOptions: RequestInit = assign({}, { method: 'POST' }, options);
+    const fetchOptions: RequestInit = assign({}, { method: 'GET' }, options);
 
     const contentTypeHeader: Dictionary<string> = {};
     if (contentTypeHeader) {
