@@ -10,7 +10,6 @@ import { CitrusTrack } from './CitrusTrack';
 
 interface IOptions {
   disableTracking?: boolean;
-  overrideApiAddress?: string;
 }
 
 export class CitrusAd {
@@ -19,12 +18,12 @@ export class CitrusAd {
   private api: DefaultApi;
   private citrusTrack: CitrusTrack;
 
-  static init(options: IOptions = {}): CitrusAd {
-    return new CitrusAd(options);
+  static init(apiAddress: string, options: IOptions = {}): CitrusAd {
+    return new CitrusAd(apiAddress, options);
   }
 
-  private constructor(private options: IOptions = {}) {
-    this.api = new DefaultApi(undefined, options.overrideApiAddress);
+  private constructor(apiAddress: string, private options: IOptions = {}) {
+    this.api = new DefaultApi(undefined, apiAddress);
     this.citrusTrack = new CitrusTrack(options.disableTracking);
   }
 

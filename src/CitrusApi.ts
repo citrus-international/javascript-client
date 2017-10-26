@@ -19,8 +19,6 @@ import * as assign from 'core-js/library/fn/object/assign';
 interface Dictionary<T> { [index: string]: T; }
 export type FetchAPI = (url: string, init?: any) => Promise<any>;
 
-const BASE_PATH = 'https://au-integration.citrusad.com/v1'.replace(/\/+$/, '');
-
 export interface FetchArgs {
   url: string;
   options: any;
@@ -30,7 +28,10 @@ export class BaseAPI {
   basePath: string;
   fetch: FetchAPI;
 
-  constructor(fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) {
+  constructor(fetch: FetchAPI = isomorphicFetch, basePath: string) {
+    if (typeof basePath === 'undefined' || !basePath) {
+      throw new Error('Base path should be provided.');
+    }
     this.basePath = basePath;
     this.fetch = fetch;
   }
@@ -143,7 +144,7 @@ export const DefaultApiFp = {
      */
   reportClick(params: IReport, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<Response> {
     const fetchArgs = DefaultApiFetchParamCreator.reportClick(params, options);
-    return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+    return (fetch: FetchAPI = isomorphicFetch, basePath: string) => {
       return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
         if (response.status >= 200 && response.status < 300) {
           return response;
@@ -161,7 +162,7 @@ export const DefaultApiFp = {
      */
   reportImpression(params: IReport, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<Response> {
     const fetchArgs = DefaultApiFetchParamCreator.reportImpression(params, options);
-    return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
+    return (fetch: FetchAPI = isomorphicFetch, basePath: string) => {
       return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
         if (response.status >= 200 && response.status < 300) {
           return response;
