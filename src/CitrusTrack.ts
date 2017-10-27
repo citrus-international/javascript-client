@@ -10,7 +10,11 @@ export class CitrusTrack {
   constructor(private disableTracking: boolean, fingerPrinter = Fingerprint2, private wnd: Window = window) {
     this.lsid = disableTracking ? Promise.resolve(null) : this.getOrCreateLSID();
     this.bfp = disableTracking ? Promise.resolve(null) : new Promise((resolve, reject) => {
-      new fingerPrinter().get(resolve);
+      try {
+        new fingerPrinter().get(resolve);
+      } catch (err) {
+        resolve('err');
+      }
     });
   }
 
