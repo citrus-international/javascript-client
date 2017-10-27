@@ -65,7 +65,7 @@ export const DefaultApiFetchParamCreator = {
       throw new Error('Missing required parameter cookies when calling reportClick');
     }
 
-    const baseUrl = `/resource/first/{adId}`
+    const baseUrl = `/resource/second-c/{adId}`
       .replace(`{${'adId'}}`, `${params['adId']}`);
     const urlObj = url.parse(baseUrl, true);
     urlObj.query = assign({}, urlObj.query, {
@@ -99,7 +99,7 @@ export const DefaultApiFetchParamCreator = {
       throw new Error('Missing required parameter cookies when calling reportImpression');
     }
 
-    const baseUrl = `/resource/second/{adId}`
+    const baseUrl = `/resource/first-i/{adId}`
       .replace(`{${'adId'}}`, `${params['adId']}`);
     const urlObj = url.parse(baseUrl, true);
     urlObj.query = assign({}, urlObj.query, {
