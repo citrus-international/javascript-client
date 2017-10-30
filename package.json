@@ -39,7 +39,7 @@
     "isomorphic-fetch": "^2.2.1",
     "jasmine": "^2.6.0",
     "jasmine-ajax": "^3.3.1",
-    "json-refs": "^3.0.0",
+    "json-refs": "^3.0.2",
     "karma": "^1.7.0",
     "karma-chrome-launcher": "^2.1.1",
     "karma-jasmine": "^1.1.0",
@@ -54,12 +54,12 @@
     "ts-loader": "^2.3.4",
     "ts-node": "^3.3.0",
     "tslint": "^5.7.0",
+    "tslint-config-airbnb": "^5.2.1",
     "tslint-config-standard": "^6.0.1",
     "typescript": "^2.4.2",
     "uglifyjs-webpack-plugin": "^0.4.6",
     "uuid": "^3.1.0",
-    "webpack": "^2.5.1",
-    "tslint-config-airbnb": "^5.2.1"
+    "webpack": "^2.5.1"
   },
   "dependencies": {}
 }

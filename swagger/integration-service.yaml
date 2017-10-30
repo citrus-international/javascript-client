@@ -67,80 +67,18 @@ paths:
           $ref: '#/responses/ErrorResponse'
         default:
           $ref: '#/responses/ErrorResponse'
-  /ads/purchase:
-    post:
-      summary: Report a purchase
-      description: >
-        Reports a purchase for one or more Ads
-
-
-        A purchase should be reported whenever a user clicks on an Ad and
-        subsequently purchases the item.
-
-        It is the responsibility of the backend to report a purchase that
-        involved an Ad. When a purchase occurs,
-
-        this endpoint should be called with the IDs of the other ads that
-        resulted in the purchase.
-
-
-        This endpoint takes a list of IDs and records the purchase event. This
-        purchase is tied to the provided Order ID
-
-        for future tracking and reference. It is the reposability of the caller
-        to generate an Order ID -- we suggest
-
-        a version 4 UUID or whatever unique identifier already used to identify
-        an Order.
-      operationId: reportPurchase
-      parameters:
-        - name: teamId
-          in: query
-          required: true
-          type: string
-        - name: Purchase
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/Purchase'
-      responses:
-        '200':
-          description: OK
-        '400':
-          $ref: '#/responses/ErrorResponse'
-        '401':
-          $ref: '#/responses/ErrorResponse'
-        '403':
-          $ref: '#/responses/ErrorResponse'
-        '404':
-          $ref: '#/responses/ErrorResponse'
-        '429':
-          $ref: '#/responses/ErrorResponse'
-        '500':
-          $ref: '#/responses/ErrorResponse'
-        '502':
-          $ref: '#/responses/ErrorResponse'
-        '503':
-          $ref: '#/responses/ErrorResponse'
-        '504':
-          $ref: '#/responses/ErrorResponse'
-        default:
-          $ref: '#/responses/ErrorResponse'
   '/ads/{adId}':
     get:
       summary: Retrieve an Ad
       description: |
         Retrieves an Ad.
       operationId: getProductAd
+      security: []
       parameters:
         - in: path
           name: adId
           type: string
           required: true
-        - name: teamId
-          in: query
-          required: true
-          type: string
       responses:
         '200':
           description: >
@@ -168,30 +106,25 @@ paths:
           $ref: '#/responses/ErrorResponse'
         default:
           $ref: '#/responses/ErrorResponse'
-  '/ads/{adId}/click':
-    post:
+  '/resource/second-c/{adId}':
+    get:
       summary: Report an Ad click
       description: >
-        Reports a click for an Ad
+        Reports a click for an Ad.
 
 
         A Click should be reported whenever a user clicks on an Ad.
 
 
         Similar to impressions, the Product Ad ID must be included in the path
-        of the request along with the appropriate
-
-        JWT.
+        of the request.
       operationId: reportClick
+      security: []
       parameters:
         - name: adId
           in: path
           type: string
           required: true
-        - name: teamId
-          in: query
-          required: true
-          type: string
       responses:
         '200':
           description: OK
@@ -215,11 +148,11 @@ paths:
           $ref: '#/responses/ErrorResponse'
         default:
           $ref: '#/responses/ErrorResponse'
-  '/ads/{adId}/impression':
-    post:
+  '/resource/first-i/{adId}':
+    get:
       summary: Report an Ad impression
       description: >
-        Reports an impression for an Ad
+        Reports an impression for an Ad.
 
 
         An impression should be reported whenever a user views an Ad.
@@ -228,18 +161,14 @@ paths:
         When reporting an impression, the Product Ad ID that was provided when
         generating the ad must be included
 
-        in the path of the request. As with other endpoints, the generated JWT
-        must also be provided as authentication.
+        in the path of the request.
       operationId: reportImpression
+      security: []
       parameters:
         - name: adId
           in: path
           type: string
           required: true
-        - name: teamId
-          in: query
-          required: true
-          type: string
       responses:
         '200':
           description: OK
@@ -270,10 +199,6 @@ paths:
         Creates or Updates the list of provided catalogs.
       operationId: pushCatalogs
       parameters:
-        - name: teamId
-          in: query
-          required: true
-          type: string
         - in: body
           name: pushCatalogsRequest
           schema:
@@ -281,7 +206,11 @@ paths:
           required: true
       responses:
         '200':
-          description: OK
+          description: >-
+            Returns a list of Catalogs with generated IDs in the same order they
+            were submitted
+          schema:
+            $ref: '#/definitions/PushCatalogsResponse'
         '400':
           $ref: '#/responses/ErrorResponse'
         '401':
@@ -308,13 +237,16 @@ paths:
         Returns a list of catalogs. The catalogs are returned sorted by creation
         date with
 
-        the most recent catalogs appearing first.
+        the most recent catalogs appearing first. If teamId is set as a
+        parameter, catalogs for
+
+        that teamId will be returned, otherwise, catalogs with provided
+        catalogIds will be retunred.
       operationId: getCatalogs
       parameters:
         - name: teamId
           in: query
           type: string
-          required: true
         - name: limit
           in: query
           type: integer
@@ -355,50 +287,7 @@ paths:
           $ref: '#/responses/ErrorResponse'
         default:
           $ref: '#/responses/ErrorResponse'
-  '/catalogs/{teamId}/{catalogId}':
-    post:
-      summary: Update a Catalog
-      description: |
-        Updates the catalog.
-        Provide the id used in the previous request when creating the catalog.
-      operationId: pushCatalog
-      parameters:
-        - in: path
-          name: teamId
-          type: string
-          required: true
-        - in: path
-          name: catalogId
-          type: string
-          required: true
-        - in: body
-          required: true
-          name: UpdateCatalogRequest
-          schema:
-            $ref: '#/definitions/UpdateCatalogRequest'
-      responses:
-        '200':
-          description: OK
-        '400':
-          $ref: '#/responses/ErrorResponse'
-        '401':
-          $ref: '#/responses/ErrorResponse'
-        '403':
-          $ref: '#/responses/ErrorResponse'
-        '404':
-          $ref: '#/responses/ErrorResponse'
-        '429':
-          $ref: '#/responses/ErrorResponse'
-        '500':
-          $ref: '#/responses/ErrorResponse'
-        '502':
-          $ref: '#/responses/ErrorResponse'
-        '503':
-          $ref: '#/responses/ErrorResponse'
-        '504':
-          $ref: '#/responses/ErrorResponse'
-        default:
-          $ref: '#/responses/ErrorResponse'
+  '/catalogs/{catalogId}':
     get:
       summary: Get a Catalog
       description: |
@@ -406,10 +295,6 @@ paths:
         Provide the id used in the previous request when creating the catalog.
       operationId: getCatalog
       parameters:
-        - in: path
-          name: teamId
-          type: string
-          required: true
         - in: path
           name: catalogId
           type: string
@@ -447,11 +332,186 @@ paths:
       operationId: deleteCatalog
       parameters:
         - in: path
-          name: teamId
+          name: catalogId
+          type: string
+          required: true
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+  /catalog-products:
+    post:
+      summary: Create or Update CatalogProducts
+      description: |
+        Creates or Updates the list of provided catalogProducts.
+      operationId: pushCatalogProducts
+      parameters:
+        - in: body
+          name: pushCatalogProductsRequest
+          schema:
+            $ref: '#/definitions/PushCatalogProductsRequest'
+          required: true
+      responses:
+        '200':
+          description: >-
+            Returns a list of CatalogProducts with generated IDs in the same
+            order they were submitted
+          schema:
+            $ref: '#/definitions/PushCatalogProductsResponse'
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    get:
+      summary: Retrieve a list of CatalogProducts
+      description: >
+        Returns a list of catalogProducts. The catalogProducts are returned
+        sorted by creation date with
+
+        the most recent catalogProducts appearing first. If teamId is set as a
+        parameter, catalogProducts
+
+        for that teamId will be returned, otherwise, catalogProducts with
+        provided catalogId and gtins will be returned.
+      operationId: getCatalogProducts
+      parameters:
+        - name: limit
+          in: query
+          type: integer
+          default: 5
+          format: int32
+        - name: skip
+          in: query
+          type: integer
+          default: 5
+          format: int32
+        - name: catalogId
+          in: query
+          type: string
+          required: true
+        - name: gtins
+          in: query
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: Returns a list of CatalogProducts
+          schema:
+            $ref: '#/definitions/GetCatalogProductsResponse'
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+  '/catalog-products/{catalogId}/{gtin}':
+    get:
+      summary: Get a CatalogProduct
+      description: >
+        Retrieves the catalogProduct.
+
+        Provide the id used in the previous request when creating the
+        catalogProduct.
+      operationId: getCatalogProduct
+      parameters:
+        - in: path
+          name: catalogId
           type: string
           required: true
         - in: path
+          name: gtin
+          type: string
+          required: true
+      responses:
+        '200':
+          description: Returns a CatalogProduct
+          schema:
+            $ref: '#/definitions/CatalogProduct'
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+    delete:
+      summary: Delete a CatalogProduct
+      description: >
+        Deletes the catalogProduct.
+
+        Provide the id used in the previous request when creating the
+        catalogProduct.
+      operationId: deleteCatalogProduct
+      parameters:
+        - in: path
           name: catalogId
+          type: string
+          required: true
+        - in: path
+          name: gtin
           type: string
           required: true
       responses:
@@ -484,10 +544,6 @@ paths:
         Creates or Updates the list of provided customers.
       operationId: pushCustomers
       parameters:
-        - name: teamId
-          in: query
-          required: true
-          type: string
         - in: body
           name: pushCustomersRequest
           schema:
@@ -495,7 +551,11 @@ paths:
           required: true
       responses:
         '200':
-          description: OK
+          description: >
+            Returns a list of Customers with generated IDs in the same order
+            they were submitted.
+          schema:
+            $ref: '#/definitions/PushCustomersResponse'
         '400':
           $ref: '#/responses/ErrorResponse'
         '401':
@@ -522,13 +582,16 @@ paths:
         Returns a list of customers. The customers are returned sorted by
         creation date with
 
-        the most recent customers appearing first.
+        the most recent customers appearing first. If teamId is set as a
+        parameter, customers for
+
+        that teamId will be returned, otherwise, customers with provided
+        customerIds will be retunred.
       operationId: getCustomers
       parameters:
         - name: teamId
           in: query
           type: string
-          required: true
         - name: limit
           in: query
           type: integer
@@ -569,50 +632,7 @@ paths:
           $ref: '#/responses/ErrorResponse'
         default:
           $ref: '#/responses/ErrorResponse'
-  '/customers/{teamId}/{customerId}':
-    post:
-      summary: Update a Customer
-      description: |
-        Updates a customer.
-        Provide the id used in the previous request when creating the customer.
-      operationId: pushCustomer
-      parameters:
-        - in: path
-          name: teamId
-          type: string
-          required: true
-        - in: path
-          name: customerId
-          type: string
-          required: true
-        - in: body
-          required: true
-          name: UpdateCustomerRequest
-          schema:
-            $ref: '#/definitions/UpdateCustomerRequest'
-      responses:
-        '200':
-          description: OK
-        '400':
-          $ref: '#/responses/ErrorResponse'
-        '401':
-          $ref: '#/responses/ErrorResponse'
-        '403':
-          $ref: '#/responses/ErrorResponse'
-        '404':
-          $ref: '#/responses/ErrorResponse'
-        '429':
-          $ref: '#/responses/ErrorResponse'
-        '500':
-          $ref: '#/responses/ErrorResponse'
-        '502':
-          $ref: '#/responses/ErrorResponse'
-        '503':
-          $ref: '#/responses/ErrorResponse'
-        '504':
-          $ref: '#/responses/ErrorResponse'
-        default:
-          $ref: '#/responses/ErrorResponse'
+  '/customers/{customerId}':
     get:
       summary: Retrieve a Customer
       description: |
@@ -620,10 +640,6 @@ paths:
         Provide the id used in the previous request when creating the customer.
       operationId: getCustomer
       parameters:
-        - in: path
-          name: teamId
-          type: string
-          required: true
         - in: path
           name: customerId
           type: string
@@ -661,10 +677,6 @@ paths:
       operationId: deleteCustomer
       parameters:
         - in: path
-          name: teamId
-          type: string
-          required: true
-        - in: path
           name: customerId
           type: string
           required: true
@@ -698,10 +710,6 @@ paths:
         Creates or Updates the list of provided orders.
       operationId: pushOrders
       parameters:
-        - name: teamId
-          in: query
-          required: true
-          type: string
         - in: body
           name: pushOrdersRequest
           schema:
@@ -709,7 +717,11 @@ paths:
           required: true
       responses:
         '200':
-          description: OK
+          description: >-
+            Returns a list of Orders with generated IDs in the same order they
+            were submitted
+          schema:
+            $ref: '#/definitions/PushOrdersResponse'
         '400':
           $ref: '#/responses/ErrorResponse'
         '401':
@@ -736,13 +748,16 @@ paths:
         Returns a list of orders. The orders are returned sorted by creation
         date with
 
-        the most recent orders appearing first.
+        the most recent orders appearing first. If teamId is set as a parameter,
+        orders for that
+
+        teamId will be returned, otherwise, orders with provided orderIds will
+        be retunred.
       operationId: getOrders
       parameters:
         - name: teamId
           in: query
           type: string
-          required: true
         - name: limit
           in: query
           type: integer
@@ -783,50 +798,7 @@ paths:
           $ref: '#/responses/ErrorResponse'
         default:
           $ref: '#/responses/ErrorResponse'
-  '/orders/{teamId}/{orderId}':
-    post:
-      summary: Update an Order
-      description: |
-        Updates an order.
-        Provide the id used in the previous request when creating the orders.
-      operationId: pushOrder
-      parameters:
-        - in: path
-          name: teamId
-          type: string
-          required: true
-        - in: path
-          name: orderId
-          type: string
-          required: true
-        - in: body
-          required: true
-          name: UpdateOrderRequest
-          schema:
-            $ref: '#/definitions/UpdateOrderRequest'
-      responses:
-        '200':
-          description: OK
-        '400':
-          $ref: '#/responses/ErrorResponse'
-        '401':
-          $ref: '#/responses/ErrorResponse'
-        '403':
-          $ref: '#/responses/ErrorResponse'
-        '404':
-          $ref: '#/responses/ErrorResponse'
-        '429':
-          $ref: '#/responses/ErrorResponse'
-        '500':
-          $ref: '#/responses/ErrorResponse'
-        '502':
-          $ref: '#/responses/ErrorResponse'
-        '503':
-          $ref: '#/responses/ErrorResponse'
-        '504':
-          $ref: '#/responses/ErrorResponse'
-        default:
-          $ref: '#/responses/ErrorResponse'
+  '/orders/{orderId}':
     get:
       summary: Retrieve an Order
       description: |
@@ -834,10 +806,6 @@ paths:
         Provide the id used in the previous request when creating the orders.
       operationId: getOrder
       parameters:
-        - in: path
-          name: teamId
-          type: string
-          required: true
         - in: path
           name: orderId
           type: string
@@ -875,10 +843,6 @@ paths:
       operationId: deleteOrder
       parameters:
         - in: path
-          name: teamId
-          type: string
-          required: true
-        - in: path
           name: orderId
           type: string
           required: true
@@ -914,8 +878,8 @@ paths:
       parameters:
         - name: teamId
           in: query
-          required: true
           type: string
+          required: true
         - in: body
           name: pushProductsRequest
           schema:
@@ -923,7 +887,11 @@ paths:
           required: true
       responses:
         '200':
-          description: OK
+          description: >-
+            Returns a list of Products with generated IDs in the same order when
+            submitted.
+          schema:
+            $ref: '#/definitions/PushProductsResponse'
         '400':
           $ref: '#/responses/ErrorResponse'
         '401':
@@ -967,7 +935,7 @@ paths:
           type: integer
           default: 5
           format: int32
-        - name: productIds
+        - name: gtins
           in: query
           type: array
           items:
@@ -997,53 +965,7 @@ paths:
           $ref: '#/responses/ErrorResponse'
         default:
           $ref: '#/responses/ErrorResponse'
-  '/products/{teamId}/{productGtin}':
-    post:
-      summary: Update a Product
-      description: |
-        Updates the product.
-        Provide the id used in the previous request when creating the product.
-      operationId: pushProduct
-      parameters:
-        - in: path
-          name: teamId
-          type: string
-          required: true
-        - in: path
-          name: productGtin
-          description: >-
-            The custom id specified when creating the prodict, or it's GTIN if
-            none was specified
-          type: string
-          required: true
-        - in: body
-          required: true
-          name: UpdateProductRequest
-          schema:
-            $ref: '#/definitions/UpdateProductRequest'
-      responses:
-        '200':
-          description: OK
-        '400':
-          $ref: '#/responses/ErrorResponse'
-        '401':
-          $ref: '#/responses/ErrorResponse'
-        '403':
-          $ref: '#/responses/ErrorResponse'
-        '404':
-          $ref: '#/responses/ErrorResponse'
-        '429':
-          $ref: '#/responses/ErrorResponse'
-        '500':
-          $ref: '#/responses/ErrorResponse'
-        '502':
-          $ref: '#/responses/ErrorResponse'
-        '503':
-          $ref: '#/responses/ErrorResponse'
-        '504':
-          $ref: '#/responses/ErrorResponse'
-        default:
-          $ref: '#/responses/ErrorResponse'
+  '/products/{gtin}':
     get:
       summary: Retrieve a Product
       description: |
@@ -1052,12 +974,13 @@ paths:
       operationId: getProduct
       parameters:
         - in: path
-          name: teamId
+          name: gtin
+          description: The GTIN of the product
           type: string
           required: true
-        - in: path
-          name: productGtin
-          description: The GTIN of the product
+        - in: query
+          name: teamId
+          description: Team id with which the product has been submitted with.
           type: string
           required: true
       responses:
@@ -1093,17 +1016,83 @@ paths:
       operationId: deleteProduct
       parameters:
         - in: path
-          name: teamId
+          name: gtin
+          description: The GTIN of the product
           type: string
           required: true
-        - in: path
-          name: productGtin
-          description: The GTIN of the product
+        - in: query
+          name: teamId
+          description: Team id with which the product has been submitted with.
           type: string
           required: true
       responses:
         '200':
           description: OK
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+  /teams:
+    get:
+      summary: Retrieve list of all connected teams
+      description: >
+        Returns a list of all connected teams that this team can do operations
+        on behalf of.
+      operationId: getTeams
+      responses:
+        '200':
+          description: Returns a list of connected teams info
+          schema:
+            $ref: '#/definitions/GetTeamsResponse'
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '404':
+          $ref: '#/responses/ErrorResponse'
+        '429':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
+        '502':
+          $ref: '#/responses/ErrorResponse'
+        '503':
+          $ref: '#/responses/ErrorResponse'
+        '504':
+          $ref: '#/responses/ErrorResponse'
+        default:
+          $ref: '#/responses/ErrorResponse'
+  /authenticate:
+    get:
+      summary: Test if JWT authentication works or not
+      description: |
+        Returns a message indicating which team the current JWT is working as
+      operationId: testAuthentication
+      responses:
+        '200':
+          description: >-
+            A successful message indicating which team the current JWT is
+            working
+          schema:
+            type: string
         '400':
           $ref: '#/responses/ErrorResponse'
         '401':
@@ -1151,16 +1140,22 @@ definitions:
       - teamId
       - catalogId
     properties:
-      teamId:
-        type: string
       catalogId:
         type: string
       customerId:
         type: string
       searchTerm:
         type: string
+      productFilters:
+        type: array
+        items:
+          type: array
+          items:
+            type: string
       categoryHierarchy:
-        type: string
+        type: array
+        items:
+          type: string
       substitutedProductGtin:
         type: string
       pageType:
@@ -1196,8 +1191,11 @@ definitions:
         type: string
       gtin:
         type: string
-      price:
-        type: number
+      discount:
+        $ref: '#/definitions/Discount'
+      expiry:
+        type: string
+        format: date-time
   Purchase:
     type: object
     required:
@@ -1211,32 +1209,27 @@ definitions:
         minItems: 1
         items:
           type: string
+  Discount:
+    type: object
+    properties:
+      amount:
+        type: number
+      minPrice:
+        type: number
+      maxPerCustomer:
+        type: integer
   Catalog:
     type: object
     required:
-      - catalogId
-      - catalogName
+      - name
+      - teamId
     properties:
-      catalogId:
+      id:
         type: string
-      catalogName:
+      teamId:
         type: string
-      products:
-        type: array
-        minItems: 1
-        items:
-          $ref: '#/definitions/CatalogProduct'
-  CatalogProduct:
-    type: object
-    required:
-      - gtin
-    properties:
-      gtin:
+      name:
         type: string
-      inventory:
-        type: number
-      price:
-        type: number
   GetCatalogsResponse:
     type: object
     required:
@@ -1256,6 +1249,15 @@ definitions:
         minItems: 1
         items:
           $ref: '#/definitions/Catalog'
+  PushCatalogsResponse:
+    type: object
+    required:
+      - catalogs
+    properties:
+      catalogs:
+        type: array
+        items:
+          $ref: '#/definitions/Catalog'
   UpdateCatalogRequest:
     type: object
     required:
@@ -1263,17 +1265,80 @@ definitions:
     properties:
       catalog:
         $ref: '#/definitions/Catalog'
-  Customer:
+  CatalogProduct:
     type: object
     required:
-      - customerId
+      - gtin
+      - catalogId
     properties:
-      customerId:
+      teamId:
         type: string
-      orderIds:
+      catalogId:
+        type: string
+      gtin:
+        type: string
+      inventory:
+        type: number
+      price:
+        type: number
+      categoryHierarchy:
         type: array
         items:
           type: string
+      tags:
+        type: array
+        items:
+          type: string
+      filters:
+        type: array
+        items:
+          type: string
+      profit:
+        type: number
+  GetCatalogProductsResponse:
+    type: object
+    required:
+      - catalogProducts
+    properties:
+      catalogProducts:
+        type: array
+        items:
+          $ref: '#/definitions/CatalogProduct'
+  PushCatalogProductsRequest:
+    type: object
+    required:
+      - catalogProducts
+    properties:
+      catalogProducts:
+        type: array
+        minItems: 1
+        items:
+          $ref: '#/definitions/CatalogProduct'
+  PushCatalogProductsResponse:
+    type: object
+    required:
+      - catalogProducts
+    properties:
+      catalogProducts:
+        type: array
+        items:
+          $ref: '#/definitions/CatalogProduct'
+  UpdateCatalogProductRequest:
+    type: object
+    required:
+      - catalogProduct
+    properties:
+      catalog:
+        $ref: '#/definitions/CatalogProduct'
+  Customer:
+    type: object
+    required:
+      - teamId
+    properties:
+      id:
+        type: string
+      teamId:
+        type: string
       yearOfBirth:
         type: integer
       gender:
@@ -1305,6 +1370,15 @@ definitions:
         minItems: 1
         items:
           $ref: '#/definitions/Customer'
+  PushCustomersResponse:
+    type: object
+    required:
+      - customers
+    properties:
+      customers:
+        type: array
+        items:
+          $ref: '#/definitions/Customer'
   UpdateCustomerRequest:
     type: object
     required:
@@ -1324,11 +1398,15 @@ definitions:
   Order:
     type: object
     required:
-      - orderId
       - orderDate
       - orderItems
+      - teamId
     properties:
-      orderId:
+      id:
+        type: string
+      teamId:
+        type: string
+      customerId:
         type: string
       orderDate:
         type: string
@@ -1354,6 +1432,10 @@ definitions:
         type: number
       totalOrderItemPriceAfterDiscounts:
         type: number
+      adId:
+        type: string
+      citrusDiscountAmount:
+        type: number
       substitutedFor:
         $ref: '#/definitions/OrderItem'
   PushOrdersRequest:
@@ -1364,6 +1446,15 @@ definitions:
       orders:
         type: array
         minItems: 1
+        items:
+          $ref: '#/definitions/Order'
+  PushOrdersResponse:
+    type: object
+    required:
+      - orders
+    properties:
+      orders:
+        type: array
         items:
           $ref: '#/definitions/Order'
   UpdateOrderRequest:
@@ -1391,20 +1482,12 @@ definitions:
         type: string
       name:
         type: string
-      category:
-        type: string
       size:
         type: string
-      tags:
-        type: array
-        items:
-          type: string
       images:
         type: array
         items:
           type: string
-      regularPrice:
-        type: number
   PushProductsRequest:
     type: object
     required:
@@ -1415,6 +1498,15 @@ definitions:
         minItems: 1
         items:
           $ref: '#/definitions/Product'
+  PushProductsResponse:
+    type: object
+    required:
+      - products
+    properties:
+      products:
+        type: array
+        items:
+          $ref: '#/definitions/Product'
   UpdateProductRequest:
     type: object
     required:
@@ -1422,6 +1514,51 @@ definitions:
     properties:
       product:
         $ref: '#/definitions/Product'
+  GetTeamsResponse:
+    type: object
+    properties:
+      teams:
+        type: array
+        items:
+          type: object
+          properties:
+            citrusTeamId:
+              type: string
+            thirdPartyTeamId:
+              type: string
+            permissions:
+              type: array
+              items:
+                $ref: '#/definitions/Permission'
+  Permission:
+    type: object
+    required:
+      - domain
+      - object
+      - accesses
+    properties:
+      domain:
+        type: string
+        enum:
+          - CUSTOMER_DATA
+          - ORDER_DATA
+          - CATALOG_DATA
+          - PRODUCT_DATA
+          - CAMPAIGN_DATA
+          - REQUEST_ADS
+          - CATALOG_PRODUCT_DATA
+          - PERMISSION_DATA
+          - LINK_DATA
+          - ACCOUNT_DATA
+          - CONTACT_DATA
+          - REPORTING_DATA
+      accesses:
+        type: array
+        items:
+          type: string
+          enum:
+            - READ_WRITE
+            - READ_ONLY
 responses:
   ErrorResponse:
     description: An error response.

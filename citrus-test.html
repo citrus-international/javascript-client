@@ -1,0 +1,34 @@
+<html>
+
+<head>
+  <script type="text/javascript" src="./dist/citrus.js" crossorigin="anonymous"></script>
+</head>
+<script>
+  var citrus = CitrusAd.init('https://dev-integration.citrusad.com/v1')
+  // var citrus = CitrusAd.init('https://staging-integration.citrusad.com/v1')
+  window.testImpression = function () {
+    var adId = document.getElementById('adId').value
+    var teamId = document.getElementById('teamId').value
+    citrus.reportImpression(adId, teamId).then(
+      function (result) { console.log('success', result) },
+      function (err) { console.error('err', err) }
+    )
+  }
+  window.testClick = function () {
+    var adId = document.getElementById('adId').value
+    var teamId = document.getElementById('teamId').value
+    citrus.reportClick(adId, teamId).then(
+      function (result) { console.log('success', result) },
+      function (err) { console.error('err', err) }
+    )
+  }
+</script>
+
+<body>
+  <input id="adId" type="text" placeholder="Ad Id" />
+  <input id="teamId" type="text" placeholder="Team Id" />
+  <button onclick="testImpression()">Test Impression</button>
+  <button onclick="testClick()">Test click</button>
+</body>
+
+</html>

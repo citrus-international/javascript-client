@@ -10,7 +10,7 @@ describe('Test suit for CitrusAd JS Library', () => {
     beforeEach(() => {
       const mockJWTProvider = sinon.stub().returns(Promise.resolve('jwt'));
       mockFailingAction = sinon.stub().returns(Promise.reject({ status: 500 }));
-      citrusAd = CitrusAd.init({ overrideApiAddress: 'https://endpoint' });
+      citrusAd = CitrusAd.init('https://endpoint');
     });
 
     it('retries actions three times', (done) => {
