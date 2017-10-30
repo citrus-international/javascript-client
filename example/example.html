@@ -8,12 +8,12 @@
 <script type="text/javascript" src="/dist/CitrusAd.js"></script>
 <script type="text/javascript">
   var citrusAd = CitrusAd.init("https://au-integration.citrusad.com/v1");
-  citrusAd.reportClick('adId', 'teamId').then(function (result) {
+  citrusAd.reportClick('adId').then(function (result) {
     console.log(result);
   }).catch(function (error) {
     console.log(error);
   })
-  citrusAd.reportImpression('adId', 'teamId').then(function (result) {
+  citrusAd.reportImpression('adId').then(function (result) {
     console.log(result);
   }).catch(function (error) {
     console.log(error);

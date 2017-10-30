@@ -106,7 +106,7 @@ paths:
           $ref: '#/responses/ErrorResponse'
         default:
           $ref: '#/responses/ErrorResponse'
-  '/resource/first/{adId}':
+  '/resource/second-c/{adId}':
     get:
       summary: Report an Ad click
       description: >
@@ -148,7 +148,7 @@ paths:
           $ref: '#/responses/ErrorResponse'
         default:
           $ref: '#/responses/ErrorResponse'
-  '/resource/second/{adId}':
+  '/resource/first-i/{adId}':
     get:
       summary: Report an Ad impression
       description: >
@@ -1544,7 +1544,14 @@ definitions:
           - ORDER_DATA
           - CATALOG_DATA
           - PRODUCT_DATA
+          - CAMPAIGN_DATA
           - REQUEST_ADS
+          - CATALOG_PRODUCT_DATA
+          - PERMISSION_DATA
+          - LINK_DATA
+          - ACCOUNT_DATA
+          - CONTACT_DATA
+          - REPORTING_DATA
       accesses:
         type: array
         items:
