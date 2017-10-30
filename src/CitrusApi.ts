@@ -30,8 +30,11 @@ export class BaseAPI {
 
   constructor(fetch: FetchAPI = isomorphicFetch, basePath: string) {
     if (typeof basePath === 'undefined' || !basePath) {
-      throw new Error('Base path should be provided.');
+      throw new Error('Citrus: Api Address should be provided.');
+    } else if (typeof basePath !== 'string') {
+      throw new Error('Citrus: Api Address should be a string');
     }
+
     this.basePath = basePath;
     this.fetch = fetch;
   }
@@ -47,13 +50,13 @@ export interface IReport {
  */
 // tslint:disable variable-name
 export const DefaultApiFetchParamCreator = {
-    /**
-     * Reports a click for an Ad  A Click should be reported whenever a user clicks on an Ad.  Similar to impressions, the Product Ad ID must be included in the path of the request along with the appropriate JWT.
-     * @summary Report an Ad click
-     * @param adId
-     */
+  /**
+   * Reports a click for an Ad  A Click should be reported whenever a user clicks on an Ad.  Similar to impressions, the Product Ad ID must be included in the path of the request along with the appropriate JWT.
+   * @summary Report an Ad click
+   * @param adId
+   */
   reportClick(params: IReport, options?: any): FetchArgs {
-        // verify required parameter "adId" is set
+    // verify required parameter "adId" is set
     if (params['adId'] == null) {
       throw new Error('Missing required parameter adId when calling reportClick');
     }
@@ -62,8 +65,8 @@ export const DefaultApiFetchParamCreator = {
       throw new Error('Missing required parameter cookies when calling reportClick');
     }
 
-    const baseUrl = `/resource/second/{adId}`
-            .replace(`{${'adId'}}`, `${ params['adId'] }`);
+    const baseUrl = `/resource/second-c/{adId}`
+      .replace(`{${'adId'}}`, `${params['adId']}`);
     const urlObj = url.parse(baseUrl, true);
     urlObj.query = assign({}, urlObj.query, {
       lsid: params['lsid'],
@@ -81,13 +84,13 @@ export const DefaultApiFetchParamCreator = {
       options: fetchOptions,
     };
   },
-    /**
-     * Reports an impression for an Ad  An impression should be reported whenever a user views an Ad.  When reporting an impression, the Product Ad ID that was provided when generating the ad must be included in the path of the request. As with other endpoints, the generated JWT must also be provided as authentication.
-     * @summary Report an Ad impression
-     * @param adId
-     */
+  /**
+   * Reports an impression for an Ad  An impression should be reported whenever a user views an Ad.  When reporting an impression, the Product Ad ID that was provided when generating the ad must be included in the path of the request. As with other endpoints, the generated JWT must also be provided as authentication.
+   * @summary Report an Ad impression
+   * @param adId
+   */
   reportImpression(params: IReport, options?: any): FetchArgs {
-        // verify required parameter "adId" is set
+    // verify required parameter "adId" is set
     if (params['adId'] == null) {
       throw new Error('Missing required parameter adId when calling reportImpression');
     }
@@ -96,8 +99,8 @@ export const DefaultApiFetchParamCreator = {
       throw new Error('Missing required parameter cookies when calling reportImpression');
     }
 
-    const baseUrl = `/resource/first/{adId}`
-            .replace(`{${'adId'}}`, `${ params['adId'] }`);
+    const baseUrl = `/resource/first-i/{adId}`
+      .replace(`{${'adId'}}`, `${params['adId']}`);
     const urlObj = url.parse(baseUrl, true);
     urlObj.query = assign({}, urlObj.query, {
       lsid: params['lsid'],
@@ -123,11 +126,11 @@ export const DefaultApiFetchParamCreator = {
 // tslint:disable variable-name
 export const DefaultApiFp = {
 
-    /**
-     * Reports a click for an Ad  A Click should be reported whenever a user clicks on an Ad.  Similar to impressions, the Product Ad ID must be included in the path of the request along with the appropriate JWT.
-     * @summary Report an Ad click
-     * @param adId
-     */
+  /**
+   * Reports a click for an Ad  A Click should be reported whenever a user clicks on an Ad.  Similar to impressions, the Product Ad ID must be included in the path of the request along with the appropriate JWT.
+   * @summary Report an Ad click
+   * @param adId
+   */
   reportClick(params: IReport, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<Response> {
     const fetchArgs = DefaultApiFetchParamCreator.reportClick(params, options);
     return (fetch: FetchAPI = isomorphicFetch, basePath: string) => {
@@ -140,11 +143,11 @@ export const DefaultApiFp = {
       });
     };
   },
-    /**
-     * Reports an impression for an Ad  An impression should be reported whenever a user views an Ad.  When reporting an impression, the Product Ad ID that was provided when generating the ad must be included in the path of the request. As with other endpoints, the generated JWT must also be provided as authentication.
-     * @summary Report an Ad impression
-     * @param adId
-     */
+  /**
+   * Reports an impression for an Ad  An impression should be reported whenever a user views an Ad.  When reporting an impression, the Product Ad ID that was provided when generating the ad must be included in the path of the request. As with other endpoints, the generated JWT must also be provided as authentication.
+   * @summary Report an Ad impression
+   * @param adId
+   */
   reportImpression(params: IReport, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<Response> {
     const fetchArgs = DefaultApiFetchParamCreator.reportImpression(params, options);
     return (fetch: FetchAPI = isomorphicFetch, basePath: string) => {
@@ -163,19 +166,19 @@ export const DefaultApiFp = {
  * DefaultApi - object-oriented interface
  */
 export class DefaultApi extends BaseAPI {
-    /**
-     * Reports a click for an Ad  A Click should be reported whenever a user clicks on an Ad.  Similar to impressions, the Product Ad ID must be included in the path of the request along with the appropriate JWT.
-     * @summary Report an Ad click
-     * @param adId
-     */
+  /**
+   * Reports a click for an Ad  A Click should be reported whenever a user clicks on an Ad.  Similar to impressions, the Product Ad ID must be included in the path of the request along with the appropriate JWT.
+   * @summary Report an Ad click
+   * @param adId
+   */
   reportClick(params: IReport, options?: any) {
     return DefaultApiFp.reportClick(params, options)(this.fetch, this.basePath);
   }
-    /**
-     * Reports an impression for an Ad  An impression should be reported whenever a user views an Ad.  When reporting an impression, the Product Ad ID that was provided when generating the ad must be included in the path of the request. As with other endpoints, the generated JWT must also be provided as authentication.
-     * @summary Report an Ad impression
-     * @param adId
-     */
+  /**
+   * Reports an impression for an Ad  An impression should be reported whenever a user views an Ad.  When reporting an impression, the Product Ad ID that was provided when generating the ad must be included in the path of the request. As with other endpoints, the generated JWT must also be provided as authentication.
+   * @summary Report an Ad impression
+   * @param adId
+   */
   reportImpression(params: IReport, options?: any) {
     return DefaultApiFp.reportImpression(params, options)(this.fetch, this.basePath);
   }
@@ -188,19 +191,19 @@ export class DefaultApi extends BaseAPI {
 // tslint:disable variable-name
 export const DefaultApiFactory = function (fetch?: FetchAPI, basePath?: string) {
   return {
-        /**
-         * Reports a click for an Ad  A Click should be reported whenever a user clicks on an Ad.  Similar to impressions, the Product Ad ID must be included in the path of the request along with the appropriate JWT.
-         * @summary Report an Ad click
-         * @param adId
-         */
+    /**
+     * Reports a click for an Ad  A Click should be reported whenever a user clicks on an Ad.  Similar to impressions, the Product Ad ID must be included in the path of the request along with the appropriate JWT.
+     * @summary Report an Ad click
+     * @param adId
+     */
     reportClick(params: IReport, options?: any) {
       return DefaultApiFp.reportClick(params, options)(fetch, basePath);
     },
-        /**
-         * Reports an impression for an Ad  An impression should be reported whenever a user views an Ad.  When reporting an impression, the Product Ad ID that was provided when generating the ad must be included in the path of the request. As with other endpoints, the generated JWT must also be provided as authentication.
-         * @summary Report an Ad impression
-         * @param adId
-         */
+    /**
+     * Reports an impression for an Ad  An impression should be reported whenever a user views an Ad.  When reporting an impression, the Product Ad ID that was provided when generating the ad must be included in the path of the request. As with other endpoints, the generated JWT must also be provided as authentication.
+     * @summary Report an Ad impression
+     * @param adId
+     */
     reportImpression(params: IReport, options?: any) {
       return DefaultApiFp.reportImpression(params, options)(fetch, basePath);
     },
