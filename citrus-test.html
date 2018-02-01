@@ -22,6 +22,12 @@
       function (err) { console.error('err', err) }
     )
   }
+  window.testGetTrackParams = function () {
+    citrus.getTrackingInformation().then(
+        function (result) { console.log('success', result) },
+        function (err) { console.error('err', err) }
+    )
+  }
 </script>
 
 <body>
@@ -29,6 +35,7 @@
   <input id="teamId" type="text" placeholder="Team Id" />
   <button onclick="testImpression()">Test Impression</button>
   <button onclick="testClick()">Test click</button>
+  <button onclick="testGetTrackParams()">Test getTrackParams</button>
 </body>
 
 </html>

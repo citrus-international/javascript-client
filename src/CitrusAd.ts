@@ -41,6 +41,10 @@ export class CitrusAd {
     );
   }
 
+  async getTrackingInformation() {
+    return await this.citrusTrack.getTrackingParams();
+  }
+
   private timeout(seconds: number) {
     return new Promise(resolve => setTimeout(resolve, seconds * 1000));
   }
