@@ -1,28 +1,33 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="UTF-8">
   <title>Example Usage of CitrusAd JS Library</title>
 </head>
+
 <body>
-<script type="text/javascript" src="/dist/CitrusAd.js"></script>
-<script type="text/javascript">
-  var citrusAd = CitrusAd.init("https://au-integration.citrusad.com/v1");
-  citrusAd.reportClick('adId').then(function (result) {
-    console.log(result);
-  }).catch(function (error) {
-    console.log(error);
-  })
-  citrusAd.reportImpression('adId').then(function (result) {
-    console.log(result);
-  }).catch(function (error) {
-    console.log(error);
-  })
-  citrusAd.getTrackingInformation().then(function (result) {
-    console.log(result);
-  }).catch(function (error) {
-    console.log(error);
-  })
-</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.0.0/polyfill.min.js"></script>
+  <script type="text/javascript" src="/dist/citrus.js"></script>
+  <script type="text/javascript">
+    var citrusAd = CitrusAd.init("https://au-integration.citrusad.com/v1");
+    citrusAd.reportClick('adId').then(function (result) {
+      console.log(result);
+    }).catch(function (error) {
+      console.log(error);
+    })
+    citrusAd.reportImpression('adId').then(function (result) {
+      console.log(result);
+    }).catch(function (error) {
+      console.log(error);
+    })
+    citrusAd.getTrackingInformation().then(function (result) {
+      console.log(result);
+    }).catch(function (error) {
+      console.log(error);
+    })
+
+  </script>
 </body>
+
 </html>
