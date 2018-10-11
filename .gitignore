@@ -9,3 +9,4 @@ node_modules/
 *.iml
 /dist
 *.log
+.DS_Store
