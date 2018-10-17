@@ -17,6 +17,5 @@ if [ $? != 0 ]
         exit $?
 fi
 
-# JHM don't run this manually without a proper base_href otherwise everything goes. :/
-aws s3 sync dist/ "s3://cdn.citrusad.com/citrusjs/$1/"
+aws s3 sync dist/ "s3://admin-console-websites/citrusjs/$1/"
 
