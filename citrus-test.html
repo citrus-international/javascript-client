@@ -1,10 +1,18 @@
 <html>
 
 <head>
-  <script type="text/javascript" src="./dist/citrus.js" crossorigin="anonymous"></script>
+
 </head>
-<script>
-  var citrus = CitrusAd.init('https://dev-integration.citrusad.com/v1')
+
+<body>
+  <script>
+  </script>
+
+  <script type="text/javascript" src="./dist/prototype.js" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="./dist/polyfills.js" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="./dist/citrus.js" crossorigin="anonymous"></script>
+  <script>
+    var citrus = CitrusAd.init('https://dev-integration.citrusad.com/v1')
   // var citrus = CitrusAd.init('https://staging-integration.citrusad.com/v1')
   window.testImpression = function () {
     var adId = document.getElementById('adId').value
@@ -29,8 +37,6 @@
     )
   }
 </script>
-
-<body>
   <input id="adId" type="text" placeholder="Ad Id" />
   <input id="teamId" type="text" placeholder="Team Id" />
   <button onclick="testImpression()">Test Impression</button>

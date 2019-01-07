@@ -1,6 +1,6 @@
 {
   "name": "javascript-client",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "description": "CitrusAd JavaScript Library",
   "main": "index.js",
   "scripts": {
@@ -32,8 +32,8 @@
     "@types/uuid": "^3.4.1",
     "babel-core": "^6.24.1",
     "babel-loader": "^7.0.0",
-    "babel-polyfill": "^6.23.0",
     "babel-preset-env": "^1.5.1",
+    "idempotent-babel-polyfill": "^6.26.0-1",
     "cookies-js": "^1.2.3",
     "fingerprintjs2": "^1.5.1",
     "isomorphic-fetch": "^2.2.1",
